@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.DormBed.mapper.DormBedMapper">
+
+    <resultMap type="DormBed" id="DormBedResult">
+        <result property="id"    column="ID"    />
+        <result property="areaNumber"    column="area_number"    />
+        <result property="floorNumber"    column="floor_number"    />
+        <result property="dormFloor"    column="dorm_floor"    />
+        <result property="roomNumber"    column="room_number"    />
+        <result property="name"    column="name"    />
+        <result property="sex"    column="sex"    />
+        <result property="idnumber"    column="idNumber"    />
+        <result property="jobnumber"    column="jobNumber"    />
+        <result property="department1"    column="department1"    />
+        <result property="department2"    column="department2"    />
+        <result property="department3"    column="department3"    />
+        <result property="job"    column="job"    />
+        <result property="phone"    column="phone"    />
+        <result property="bedstatus"    column="bedStatus"    />
+        <result property="checkInwhether"    column="check_inWhether"    />
+        <result property="bednumber"    column="bedNumber"    />
+        <result property="remarks"    column="remarks"    />
+    </resultMap>
+
+    <sql id="selectDormBedVo">
+        select ID, area_number, floor_number, dorm_floor, room_number, name, sex, idNumber, jobNumber, department1, department2, department3, job, phone, bedStatus, check_inWhether, bedNumber, remarks from dorm_bed
+    </sql>
+
+    <select id="selectDormBedList" parameterType="DormBed" resultMap="DormBedResult">
+        <include refid="selectDormBedVo"/>
+        <where>
+            <if test="areaNumber != null  and areaNumber != ''"> and area_number = #{areaNumber}</if>
+            <if test="floorNumber != null  and floorNumber != ''"> and floor_number = #{floorNumber}</if>
+            <if test="dormFloor != null  and dormFloor != ''"> and dorm_floor = #{dormFloor}</if>
+            <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="idnumber != null  and idnumber != ''"> and idNumber = #{idnumber}</if>
+            <if test="jobnumber != null  and jobnumber != ''"> and jobNumber = #{jobnumber}</if>
+            <if test="department1 != null  and department1 != ''"> and department1 = #{department1}</if>
+            <if test="department2 != null  and department2 != ''"> and department2 = #{department2}</if>
+            <if test="department3 != null  and department3 != ''"> and department3 = #{department3}</if>
+            <if test="job != null  and job != ''"> and job = #{job}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="bedstatus != null "> and bedStatus = #{bedstatus}</if>
+            <if test="checkInwhether != null "> and check_inWhether = #{checkInwhether}</if>
+            <if test="bednumber != null  and bednumber != ''"> and bedNumber = #{bednumber}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+        </where>
+    </select>
+
+    <select id="selectDormBedByIDnumber" parameterType="String" resultMap="DormBedResult">
+        <include refid="selectDormBedVo"/>
+        where idNumber = #{idnumber}
+    </select>
+
+    <select id="selectDormBedByIDnumber2" parameterType="String" resultMap="DormBedResult">
+        <include refid="selectDormBedVo"/>
+        where idNumber = #{idnumber}
+    </select>
+
+    <select id="selectDormBedById" parameterType="Long" resultMap="DormBedResult">
+        <include refid="selectDormBedVo"/>
+        where ID = #{id}
+    </select>
+
+    <select id="selectDormBedByMap" parameterType="hashMap" resultMap="DormBedResult">
+        <include refid="selectDormBedVo"/>
+        where area_number = #{area_number} and floor_number = #{floor_number} and dorm_floor = #{dorm_floor} and room_number = #{room_number} and bednumber = #{bednumber}
+    </select>
+
+    <select id="selectDormBedByMap2" parameterType="hashMap" resultMap="DormBedResult">
+        <include refid="selectDormBedVo"/>
+        where area_number = #{area_number} and floor_number = #{floor_number} and dorm_floor = #{dorm_floor} and room_number = #{room_number}
+    </select>
+
+    <select id="selectkongbed" parameterType="hashMap" resultMap="DormBedResult">
+        <include refid="selectDormBedVo"/>
+        where area_number = #{area_number} and floor_number = #{floor_number} and dorm_floor = #{dorm_floor} and room_number = #{room_number} and check_inWhether = 0
+    </select>
+
+    <insert id="insertDormBed" parameterType="DormBed" useGeneratedKeys="true" keyProperty="id">
+        insert into dorm_bed
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="areaNumber != null">area_number,</if>
+            <if test="floorNumber != null">floor_number,</if>
+            <if test="dormFloor != null">dorm_floor,</if>
+            <if test="roomNumber != null">room_number,</if>
+            <if test="name != null">name,</if>
+            <if test="sex != null">sex,</if>
+            <if test="idnumber != null">idNumber,</if>
+            <if test="jobnumber != null">jobNumber,</if>
+            <if test="department1 != null">department1,</if>
+            <if test="department2 != null">department2,</if>
+            <if test="department3 != null">department3,</if>
+            <if test="job != null">job,</if>
+            <if test="phone != null">phone,</if>
+            <if test="bedstatus != null">bedStatus,</if>
+            <if test="checkInwhether != null">check_inWhether,</if>
+            <if test="bednumber != null">bedNumber,</if>
+            <if test="remarks != null">remarks,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="areaNumber != null">#{areaNumber},</if>
+            <if test="floorNumber != null">#{floorNumber},</if>
+            <if test="dormFloor != null">#{dormFloor},</if>
+            <if test="roomNumber != null">#{roomNumber},</if>
+            <if test="name != null">#{name},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="idnumber != null">#{idnumber},</if>
+            <if test="jobnumber != null">#{jobnumber},</if>
+            <if test="department1 != null">#{department1},</if>
+            <if test="department2 != null">#{department2},</if>
+            <if test="department3 != null">#{department3},</if>
+            <if test="job != null">#{job},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="bedstatus != null">#{bedstatus},</if>
+            <if test="checkInwhether != null">#{checkInwhether},</if>
+            <if test="bednumber != null">#{bednumber},</if>
+            <if test="remarks != null">#{remarks},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDormBed" parameterType="DormBed">
+        update dorm_bed
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="areaNumber != null">area_number = #{areaNumber},</if>
+            <if test="floorNumber != null">floor_number = #{floorNumber},</if>
+            <if test="dormFloor != null">dorm_floor = #{dormFloor},</if>
+            <if test="roomNumber != null">room_number = #{roomNumber},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="idnumber != null">idNumber = #{idnumber},</if>
+            <if test="jobnumber != null">jobNumber = #{jobnumber},</if>
+            <if test="department1 != null">department1 = #{department1},</if>
+            <if test="department2 != null">department2 = #{department2},</if>
+            <if test="department3 != null">department3 = #{department3},</if>
+            <if test="job != null">job = #{job},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="bedstatus != null">bedStatus = #{bedstatus},</if>
+            <if test="checkInwhether != null">check_inWhether = #{checkInwhether},</if>
+            <if test="bednumber != null">bedNumber = #{bednumber},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteDormBedById" parameterType="Long">
+        delete from dorm_bed where ID = #{id}
+    </delete>
+
+    <delete id="deleteDormBedByIds" parameterType="String">
+        delete from dorm_bed where ID in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

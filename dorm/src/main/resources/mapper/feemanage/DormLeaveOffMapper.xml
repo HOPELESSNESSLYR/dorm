@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.off.mapper.DormLeaveOffMapper">
+    
+    <resultMap type="DormLeaveOff" id="DormLeaveOffResult">
+        <result property="id"    column="ID"    />
+        <result property="name"    column="name"    />
+        <result property="jobnumber"    column="jobNumber"    />
+        <result property="department"    column="department"    />
+        <result property="areaNumber"    column="area_number"    />
+        <result property="floorNumber"    column="floor_number"    />
+        <result property="roomNumber"    column="room_number"    />
+        <result property="applyBegindate"    column="apply_beginDate"    />
+        <result property="applyEnddate"    column="apply_endDate"    />
+        <result property="applyDays"    column="apply_days"    />
+        <result property="applyType"    column="apply_type"    />
+        <result property="reason"    column="reason"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectDormLeaveOffVo">
+        select ID, name, jobNumber, department, area_number, floor_number, room_number, apply_beginDate, apply_endDate, apply_days, apply_type, reason, remark from dorm_leave_off
+    </sql>
+
+    <select id="selectDormLeaveOffList" parameterType="DormLeaveOff" resultMap="DormLeaveOffResult">
+        <include refid="selectDormLeaveOffVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="jobnumber != null  and jobnumber != ''"> and jobNumber = #{jobnumber}</if>
+            <if test="department != null  and department != ''"> and department = #{department}</if>
+            <if test="areaNumber != null  and areaNumber != ''"> and area_number = #{areaNumber}</if>
+            <if test="floorNumber != null  and floorNumber != ''"> and floor_number = #{floorNumber}</if>
+            <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
+            <if test="applyBegindate != null "> and apply_beginDate = #{applyBegindate}</if>
+            <if test="applyEnddate != null "> and apply_endDate = #{applyEnddate}</if>
+            <if test="applyDays != null "> and apply_days = #{applyDays}</if>
+            <if test="applyType != null "> and apply_type = #{applyType}</if>
+            <if test="reason != null  and reason != ''"> and reason = #{reason}</if>
+            <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
+        </where>
+        order by ID desc
+    </select>
+    
+    <select id="selectDormLeaveOffById" parameterType="Long" resultMap="DormLeaveOffResult">
+        <include refid="selectDormLeaveOffVo"/>
+        where ID = #{id}
+    </select>
+
+    <select id="selectSumOffdaysByIDnumber" parameterType="String" resultType="Long">
+        select SUM(apply_days) from dorm_leave_off
+        where jobNumber = #{jobnumber}
+    </select>
+
+    <insert id="insertDormLeaveOff" parameterType="DormLeaveOff" useGeneratedKeys="true" keyProperty="id">
+        insert into dorm_leave_off
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="jobnumber != null and jobnumber != ''">jobNumber,</if>
+            <if test="department != null and department != ''">department,</if>
+            <if test="areaNumber != null and areaNumber != ''">area_number,</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number,</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number,</if>
+            <if test="applyBegindate != null">apply_beginDate,</if>
+            <if test="applyEnddate != null">apply_endDate,</if>
+            <if test="applyDays != null">apply_days,</if>
+            <if test="applyType != null">apply_type,</if>
+            <if test="reason != null and reason != ''">reason,</if>
+            <if test="remark != null and remark != ''">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="jobnumber != null and jobnumber != ''">#{jobnumber},</if>
+            <if test="department != null and department != ''">#{department},</if>
+            <if test="areaNumber != null and areaNumber != ''">#{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">#{floorNumber},</if>
+            <if test="roomNumber != null and roomNumber != ''">#{roomNumber},</if>
+            <if test="applyBegindate != null">#{applyBegindate},</if>
+            <if test="applyEnddate != null">#{applyEnddate},</if>
+            <if test="applyDays != null">#{applyDays},</if>
+            <if test="applyType != null">#{applyType},</if>
+            <if test="reason != null and reason != ''">#{reason},</if>
+            <if test="remark != null and remark != ''">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDormLeaveOff" parameterType="DormLeaveOff">
+        update dorm_leave_off
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="jobnumber != null and jobnumber != ''">jobNumber = #{jobnumber},</if>
+            <if test="department != null and department != ''">department = #{department},</if>
+            <if test="areaNumber != null and areaNumber != ''">area_number = #{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number = #{floorNumber},</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number = #{roomNumber},</if>
+            <if test="applyBegindate != null">apply_beginDate = #{applyBegindate},</if>
+            <if test="applyEnddate != null">apply_endDate = #{applyEnddate},</if>
+            <if test="applyDays != null">apply_days = #{applyDays},</if>
+            <if test="applyType != null">apply_type = #{applyType},</if>
+            <if test="reason != null and reason != ''">reason = #{reason},</if>
+            <if test="remark != null and remark != ''">remark = #{remark},</if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteDormLeaveOffById" parameterType="Long">
+        delete from dorm_leave_off where ID = #{id}
+    </delete>
+
+    <delete id="deleteDormLeaveOffByIds" parameterType="String">
+        delete from dorm_leave_off where ID in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.fixedassets.mapper.DormFixedassetsMapper">
+    
+    <resultMap type="DormFixedassets" id="DormFixedassetsResult">
+        <result property="id"    column="ID"    />
+        <result property="areaNumber"    column="area_number"    />
+        <result property="floorNumber"    column="floor_number"    />
+        <result property="dormFloor"    column="dorm_floor"    />
+        <result property="roomNumber"    column="room_number"    />
+        <result property="dormPropertyNumber"    column="dorm_property_number"    />
+        <result property="dormPropertyDescription"    column="dorm_property_description"    />
+        <result property="dormPropertyRemarks"    column="dorm_property_remarks"    />
+        <result property="totalnumber"    column="totalNumber"    />
+        <result property="price"    column="price"    />
+        <result property="compensationPrice"    column="compensation_price"    />
+    </resultMap>
+
+    <sql id="selectDormFixedassetsVo">
+        select ID, area_number, floor_number, dorm_floor, room_number, dorm_property_number, dorm_property_description, dorm_property_remarks, totalNumber, price, compensation_price from dorm_fixedassets
+    </sql>
+
+    <select id="selectDormFixedassetsList" parameterType="DormFixedassets" resultMap="DormFixedassetsResult">
+        <include refid="selectDormFixedassetsVo"/>
+        <where>  
+            <if test="areaNumber != null "> and area_number = #{areaNumber}</if>
+            <if test="floorNumber != null "> and floor_number = #{floorNumber}</if>
+            <if test="dormFloor != null "> and dorm_floor = #{dormFloor}</if>
+            <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
+            <if test="dormPropertyNumber != null  and dormPropertyNumber != ''"> and dorm_property_number = #{dormPropertyNumber}</if>
+            <if test="dormPropertyDescription != null  and dormPropertyDescription != ''"> and dorm_property_description = #{dormPropertyDescription}</if>
+            <if test="dormPropertyRemarks != null  and dormPropertyRemarks != ''"> and dorm_property_remarks = #{dormPropertyRemarks}</if>
+            <if test="totalnumber != null "> and totalNumber = #{totalnumber}</if>
+            <if test="price != null "> and price = #{price}</if>
+            <if test="compensationPrice != null "> and compensation_price = #{compensationPrice}</if>
+        </where>
+    </select>
+    
+    <select id="selectDormFixedassetsById" parameterType="Long" resultMap="DormFixedassetsResult">
+        <include refid="selectDormFixedassetsVo"/>
+        where ID = #{id}
+    </select>
+        
+    <insert id="insertDormFixedassets" parameterType="DormFixedassets" useGeneratedKeys="true" keyProperty="id">
+        insert into dorm_fixedassets
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="areaNumber != null">area_number,</if>
+            <if test="floorNumber != null">floor_number,</if>
+            <if test="dormFloor != null">dorm_floor,</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number,</if>
+            <if test="dormPropertyNumber != null and dormPropertyNumber != ''">dorm_property_number,</if>
+            <if test="dormPropertyDescription != null and dormPropertyDescription != ''">dorm_property_description,</if>
+            <if test="dormPropertyRemarks != null">dorm_property_remarks,</if>
+            <if test="totalnumber != null">totalNumber,</if>
+            <if test="price != null">price,</if>
+            <if test="compensationPrice != null">compensation_price,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="areaNumber != null">#{areaNumber},</if>
+            <if test="floorNumber != null">#{floorNumber},</if>
+            <if test="dormFloor != null">#{dormFloor},</if>
+            <if test="roomNumber != null and roomNumber != ''">#{roomNumber},</if>
+            <if test="dormPropertyNumber != null and dormPropertyNumber != ''">#{dormPropertyNumber},</if>
+            <if test="dormPropertyDescription != null and dormPropertyDescription != ''">#{dormPropertyDescription},</if>
+            <if test="dormPropertyRemarks != null">#{dormPropertyRemarks},</if>
+            <if test="totalnumber != null">#{totalnumber},</if>
+            <if test="price != null">#{price},</if>
+            <if test="compensationPrice != null">#{compensationPrice},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDormFixedassets" parameterType="DormFixedassets">
+        update dorm_fixedassets
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="areaNumber != null">area_number = #{areaNumber},</if>
+            <if test="floorNumber != null">floor_number = #{floorNumber},</if>
+            <if test="dormFloor != null">dorm_floor = #{dormFloor},</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number = #{roomNumber},</if>
+            <if test="dormPropertyNumber != null and dormPropertyNumber != ''">dorm_property_number = #{dormPropertyNumber},</if>
+            <if test="dormPropertyDescription != null and dormPropertyDescription != ''">dorm_property_description = #{dormPropertyDescription},</if>
+            <if test="dormPropertyRemarks != null">dorm_property_remarks = #{dormPropertyRemarks},</if>
+            <if test="totalnumber != null">totalNumber = #{totalnumber},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="compensationPrice != null">compensation_price = #{compensationPrice},</if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteDormFixedassetsById" parameterType="Long">
+        delete from dorm_fixedassets where ID = #{id}
+    </delete>
+
+    <delete id="deleteDormFixedassetsByIds" parameterType="String">
+        delete from dorm_fixedassets where ID in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.room.mapper.DormRoominforMapper">
+    
+    <resultMap type="DormRoominfor" id="DormRoominforResult">
+        <result property="id"    column="ID"    />
+        <result property="areaNumber"    column="area_number"    />
+        <result property="areaName"    column="area_name"    />
+        <result property="floorNumber"    column="floor_number"    />
+        <result property="floorName"    column="floor_name"    />
+        <result property="floorLocation"    column="floor_location"    />
+        <result property="dormFloor"    column="dorm_floor"    />
+        <result property="roomNumber"    column="room_number"    />
+        <result property="roomPrefix"    column="room_Prefix"    />
+        <result property="roomSex"    column="room_sex"    />
+        <result property="livenumber"    column="liveNumber"    />
+        <result property="peoplenumber"    column="peopleNumber"    />
+        <result property="remainnumber"    column="remainNumber"    />
+        <result property="roomType"    column="room_type"    />
+        <result property="roomStatus"    column="room_status"    />
+        <result property="cabinetNumber"    column="cabinet_number"    />
+        <result property="roomProperty"    column="room_property"    />
+        <result property="roomPeople"    column="room_people"    />
+        <result property="roomCard"    column="room_card"    />
+        <result property="temporary"    column="temporary"    />
+        <result property="cavenumber"    column="caveNumber"    />
+        <result property="cost"    column="cost"    />
+        <result property="costman"    column="costman"    />
+    </resultMap>
+
+    <sql id="selectDormRoominforVo">
+        select ID, area_number, area_name, floor_number, floor_name, floor_location, dorm_floor, room_number, room_Prefix, room_sex, liveNumber, peopleNumber, remainNumber, room_type, room_status, cabinet_number, room_property, room_people, room_card, temporary, caveNumber, cost, costman from dorm_roominfor
+    </sql>
+
+    <select id="selectDormRoominforList" parameterType="DormRoominfor" resultMap="DormRoominforResult">
+        <include refid="selectDormRoominforVo"/>
+        <where>  
+            <if test="areaNumber != null  and areaNumber != ''"> and area_number = #{areaNumber}</if>
+            <if test="areaName != null  and areaName != ''"> and area_name = #{areaName}</if>
+            <if test="floorNumber != null  and floorNumber != ''"> and floor_number = #{floorNumber}</if>
+            <if test="floorName != null  and floorName != ''"> and floor_name like concat('%', #{floorName}, '%')</if>
+            <if test="floorLocation != null  and floorLocation != ''"> and floor_location = #{floorLocation}</if>
+            <if test="dormFloor != null "> and dorm_floor = #{dormFloor}</if>
+            <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
+            <if test="roomPrefix != null  and roomPrefix != ''"> and room_Prefix = #{roomPrefix}</if>
+            <if test="roomSex != null "> and room_sex = #{roomSex}</if>
+            <if test="livenumber != null "> and liveNumber = #{livenumber}</if>
+            <if test="peoplenumber != null "> and peopleNumber = #{peoplenumber}</if>
+            <if test="remainnumber != null "> and remainNumber = #{remainnumber}</if>
+            <if test="roomType != null  and roomType != ''"> and room_type = #{roomType}</if>
+            <if test="roomStatus != null "> and room_status = #{roomStatus}</if>
+            <if test="cabinetNumber != null "> and cabinet_number = #{cabinetNumber}</if>
+            <if test="roomProperty != null  and roomProperty != ''"> and room_property = #{roomProperty}</if>
+            <if test="roomPeople != null  and roomPeople != ''"> and room_people = #{roomPeople}</if>
+            <if test="roomCard != null  and roomCard != ''"> and room_card = #{roomCard}</if>
+            <if test="temporary != null "> and temporary = #{temporary}</if>
+            <if test="cavenumber != null  and cavenumber != ''"> and caveNumber = #{cavenumber}</if>
+            <if test="cost != null "> and cost = #{cost}</if>
+            <if test="costman != null  and costman != ''"> and costman = #{costman}</if>
+        </where>
+    </select>
+    
+    <select id="selectDormRoominforById" parameterType="Long" resultMap="DormRoominforResult">
+        <include refid="selectDormRoominforVo"/>
+        where ID = #{id}
+    </select>
+
+    <select id="selectFloorName" parameterType="java.util.List" resultType="java.util.Map">
+        select DISTINCT b.floor_name, a.floor_number from dorm_roominfor b left join dorm_sslmanage a on a.floor_name = b.floor_name
+    </select>
+
+    <select id="selectFloor" parameterType="java.util.List" resultType="java.lang.Integer">
+        select DISTINCT dorm_floor from dorm_roominfor
+    </select>
+
+    <select id="selectRoomNumber" parameterType="java.util.List" resultType="java.lang.String">
+        select DISTINCT room_number from dorm_roominfor
+    </select>
+
+    <select id="selectlivingpeopleBydormRoominfor" parameterType="DormRoominfor" resultType="java.util.Map">
+        select * from dorm_livepeople
+        where area_number = #{areaNumber} and floor_number = #{floorNumber} and dorm_floor = #{dormFloor} and room_number = #{roomNumber} and liveCheck = 'X'
+    </select>
+
+    <select id="selectDormRoominforBymap" parameterType="hashmap" resultType="DormRoominfor">
+        <include refid="selectDormRoominforVo"/>
+        where area_number = #{area_number} and floor_number = #{floor_number} and dorm_floor = #{dorm_floor} and room_number = #{room_number}
+    </select>
+
+    <insert id="insertDormRoominfor" parameterType="DormRoominfor" useGeneratedKeys="true" keyProperty="id">
+        insert into dorm_roominfor
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="areaNumber != null">area_number,</if>
+            <if test="areaName != null">area_name,</if>
+            <if test="floorNumber != null">floor_number,</if>
+            <if test="floorName != null">floor_name,</if>
+            <if test="floorLocation != null">floor_location,</if>
+            <if test="dormFloor != null">dorm_floor,</if>
+            <if test="roomNumber != null">room_number,</if>
+            <if test="roomPrefix != null">room_Prefix,</if>
+            <if test="roomSex != null">room_sex,</if>
+            <if test="livenumber != null">liveNumber,</if>
+            <if test="peoplenumber != null">peopleNumber,</if>
+            <if test="remainnumber != null">remainNumber,</if>
+            <if test="roomType != null">room_type,</if>
+            <if test="roomStatus != null">room_status,</if>
+            <if test="cabinetNumber != null">cabinet_number,</if>
+            <if test="roomProperty != null">room_property,</if>
+            <if test="roomPeople != null">room_people,</if>
+            <if test="roomCard != null">room_card,</if>
+            <if test="temporary != null">temporary,</if>
+            <if test="cavenumber != null">caveNumber,</if>
+            <if test="cost != null">cost,</if>
+            <if test="costman != null">costman,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="areaNumber != null">#{areaNumber},</if>
+            <if test="areaName != null">#{areaName},</if>
+            <if test="floorNumber != null">#{floorNumber},</if>
+            <if test="floorName != null">#{floorName},</if>
+            <if test="floorLocation != null">#{floorLocation},</if>
+            <if test="dormFloor != null">#{dormFloor},</if>
+            <if test="roomNumber != null">#{roomNumber},</if>
+            <if test="roomPrefix != null">#{roomPrefix},</if>
+            <if test="roomSex != null">#{roomSex},</if>
+            <if test="livenumber != null">#{livenumber},</if>
+            <if test="peoplenumber != null">#{peoplenumber},</if>
+            <if test="remainnumber != null">#{remainnumber},</if>
+            <if test="roomType != null">#{roomType},</if>
+            <if test="roomStatus != null">#{roomStatus},</if>
+            <if test="cabinetNumber != null">#{cabinetNumber},</if>
+            <if test="roomProperty != null">#{roomProperty},</if>
+            <if test="roomPeople != null">#{roomPeople},</if>
+            <if test="roomCard != null">#{roomCard},</if>
+            <if test="temporary != null">#{temporary},</if>
+            <if test="cavenumber != null">#{cavenumber},</if>
+            <if test="cost != null">#{cost},</if>
+            <if test="costman != null">#{costman},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDormRoominfor" parameterType="DormRoominfor">
+        update dorm_roominfor
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="areaNumber != null">area_number = #{areaNumber},</if>
+            <if test="areaName != null">area_name = #{areaName},</if>
+            <if test="floorNumber != null">floor_number = #{floorNumber},</if>
+            <if test="floorName != null">floor_name = #{floorName},</if>
+            <if test="floorLocation != null">floor_location = #{floorLocation},</if>
+            <if test="dormFloor != null">dorm_floor = #{dormFloor},</if>
+            <if test="roomNumber != null">room_number = #{roomNumber},</if>
+            <if test="roomPrefix != null">room_Prefix = #{roomPrefix},</if>
+            <if test="roomSex != null">room_sex = #{roomSex},</if>
+            <if test="livenumber != null">liveNumber = #{livenumber},</if>
+            <if test="peoplenumber != null">peopleNumber = #{peoplenumber},</if>
+            <if test="remainnumber != null">remainNumber = #{remainnumber},</if>
+            <if test="roomType != null">room_type = #{roomType},</if>
+            <if test="roomStatus != null">room_status = #{roomStatus},</if>
+            <if test="cabinetNumber != null">cabinet_number = #{cabinetNumber},</if>
+            <if test="roomProperty != null">room_property = #{roomProperty},</if>
+            <if test="roomPeople != null">room_people = #{roomPeople},</if>
+            <if test="roomCard != null">room_card = #{roomCard},</if>
+            <if test="temporary != null">temporary = #{temporary},</if>
+            <if test="cavenumber != null">caveNumber = #{cavenumber},</if>
+            <if test="cost != null">cost = #{cost},</if>
+            <if test="costman != null">costman = #{costman},</if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteDormRoominforById" parameterType="Long">
+        delete from dorm_roominfor where ID = #{id}
+    </delete>
+
+    <delete id="deleteDormRoominforByIds" parameterType="String">
+        delete from dorm_roominfor where ID in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.area.mapper.DormAreaMapper">
+    
+    <resultMap type="DormArea" id="DormAreaResult">
+        <result property="areaNumber"    column="area_number"    />
+        <result property="areaName"    column="area_name"    />
+        <result property="areaLocation"    column="area_location"    />
+        <result property="areaCreateman"    column="area_createman"    />
+        <result property="areaCdate"    column="area_cdate"    />
+        <result property="remarks"    column="remarks"    />
+    </resultMap>
+
+    <sql id="selectDormAreaVo">
+        select area_number, area_name, area_location, area_createman, area_cdate, remarks from dorm_area
+    </sql>
+
+    <select id="selectDormAreaList" parameterType="DormArea" resultMap="DormAreaResult">
+        <include refid="selectDormAreaVo"/>
+        <where>  
+            <if test="areaName != null  and areaName != ''"> and area_name like concat('%', #{areaName}, '%')</if>
+            <if test="areaLocation != null  and areaLocation != ''"> and area_location = #{areaLocation}</if>
+            <if test="areaCreateman != null  and areaCreateman != ''"> and area_createman = #{areaCreateman}</if>
+            <if test="areaCdate != null "> and area_cdate = #{areaCdate}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+        </where>
+    </select>
+    
+    <select id="selectDormAreaByAreaNumber" parameterType="String" resultMap="DormAreaResult">
+        <include refid="selectDormAreaVo"/>
+        where area_number = #{areaNumber}
+    </select>
+
+
+
+    <insert id="insertDormArea" parameterType="DormArea">
+        insert into dorm_area
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="areaNumber != null">area_number,</if>
+            <if test="areaName != null">area_name,</if>
+            <if test="areaLocation != null">area_location,</if>
+            <if test="areaCreateman != null">area_createman,</if>
+            <if test="areaCdate != null">area_cdate,</if>
+            <if test="remarks != null">remarks,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="areaNumber != null">#{areaNumber},</if>
+            <if test="areaName != null">#{areaName},</if>
+            <if test="areaLocation != null">#{areaLocation},</if>
+            <if test="areaCreateman != null">#{areaCreateman},</if>
+            <if test="areaCdate != null">#{areaCdate},</if>
+            <if test="remarks != null">#{remarks},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDormArea" parameterType="DormArea">
+        update dorm_area
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="areaName != null">area_name = #{areaName},</if>
+            <if test="areaLocation != null">area_location = #{areaLocation},</if>
+            <if test="areaCreateman != null">area_createman = #{areaCreateman},</if>
+            <if test="areaCdate != null">area_cdate = #{areaCdate},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+        </trim>
+        where area_number = #{areaNumber}
+    </update>
+
+    <delete id="deleteDormAreaByAreaNumber" parameterType="String">
+        delete from dorm_area where area_number = #{areaNumber}
+    </delete>
+
+    <delete id="deleteDormAreaByAreaNumbers" parameterType="String">
+        delete from dorm_area where area_number in 
+        <foreach item="areaNumber" collection="array" open="(" separator="," close=")">
+            #{areaNumber}
+        </foreach>
+    </delete>
+</mapper>

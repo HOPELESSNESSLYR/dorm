@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.article.mapper.DormArticleMapper">
+    
+    <resultMap type="DormArticle" id="DormArticleResult">
+        <result property="id"    column="id"    />
+        <result property="areaNumber"    column="area_number"    />
+        <result property="floorNumber"    column="floor_number"    />
+        <result property="roomNumber"    column="room_number"    />
+        <result property="name"    column="name"    />
+        <result property="jobnumber"    column="jobNumber"    />
+        <result property="idnnumber"    column="idNnumber"    />
+        <result property="bednumber"    column="bedNumber"    />
+        <result property="articleNumber"    column="article_number"    />
+        <result property="articleDescription"    column="article_description"    />
+        <result property="requstQuantity"    column="requst_quantity"    />
+        <result property="returnNumber"    column="return_number"    />
+        <result property="returnDescription"    column="return_description"    />
+        <result property="returnQuantity"    column="return_quantity"    />
+    </resultMap>
+
+    <sql id="selectDormArticleVo">
+        select id, area_number, floor_number, room_number, name, jobNumber, idNnumber, bedNumber, article_number, article_description,   requst_quantity, return_number, return_description, return_quantity from dorm_article
+    </sql>
+
+    <select id="selectDormArticleList" parameterType="DormArticle" resultMap="DormArticleResult">
+        <include refid="selectDormArticleVo"/>
+        <where>  
+            <if test="areaNumber != null  and areaNumber != ''"> and area_number = #{areaNumber}</if>
+            <if test="floorNumber != null  and floorNumber != ''"> and floor_number = #{floorNumber}</if>
+            <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="jobnumber != null  and jobnumber != ''"> and jobNumber = #{jobnumber}</if>
+            <if test="idnnumber != null  and idnnumber != ''"> and idNnumber = #{idnnumber}</if>
+            <if test="bednumber != null "> and bedNumber = #{bednumber}</if>
+            <if test="articleNumber != null  and articleNumber != ''"> and article_number = #{articleNumber}</if>
+            <if test="articleDescription != null  and articleDescription != ''"> and article_description = #{articleDescription}</if>
+            <if test="requstQuantity != null "> and requst_quantity = #{requstQuantity}</if>
+            <if test="returnNumber != null  and returnNumber != ''"> and return_number = #{returnNumber}</if>
+            <if test="returnDescription != null  and returnDescription != ''"> and return_description = #{returnDescription}</if>
+            <if test="returnQuantity != null "> and return_quantity = #{returnQuantity}</if>
+        </where>
+    </select>
+    
+    <select id="selectDormArticleById" parameterType="Long" resultMap="DormArticleResult">
+        <include refid="selectDormArticleVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDormArticleByIDnumber" parameterType="String" resultMap="DormArticleResult">
+        <include refid="selectDormArticleVo"/>
+        where idNnumber = #{idnnumber}
+    </select>
+
+    <insert id="insertDormArticle" parameterType="DormArticle">
+        insert into dorm_article
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="areaNumber != null and areaNumber != ''">area_number,</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number,</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="jobnumber != null and jobnumber != ''">jobNumber,</if>
+            <if test="idnnumber != null and idnnumber != ''">idNnumber,</if>
+            <if test="bednumber != null">bedNumber,</if>
+            <if test="articleNumber != null">article_number,</if>
+            <if test="articleDescription != null">article_description,</if>
+            <if test="requstQuantity != null">requst_quantity,</if>
+            <if test="returnNumber != null">return_number,</if>
+            <if test="returnDescription != null">return_description,</if>
+            <if test="returnQuantity != null">return_quantity,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="areaNumber != null and areaNumber != ''">#{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">#{floorNumber},</if>
+            <if test="roomNumber != null and roomNumber != ''">#{roomNumber},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="jobnumber != null and jobnumber != ''">#{jobnumber},</if>
+            <if test="idnnumber != null and idnnumber != ''">#{idnnumber},</if>
+            <if test="bednumber != null">#{bednumber},</if>
+            <if test="articleNumber != null">#{articleNumber},</if>
+            <if test="articleDescription != null">#{articleDescription},</if>
+            <if test="requstQuantity != null">#{requstQuantity},</if>
+            <if test="returnNumber != null">#{returnNumber},</if>
+            <if test="returnDescription != null">#{returnDescription},</if>
+            <if test="returnQuantity != null">#{returnQuantity},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDormArticle" parameterType="DormArticle">
+        update dorm_article
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="areaNumber != null and areaNumber != ''">area_number = #{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number = #{floorNumber},</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number = #{roomNumber},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="jobnumber != null and jobnumber != ''">jobNumber = #{jobnumber},</if>
+            <if test="idnnumber != null and idnnumber != ''">idNnumber = #{idnnumber},</if>
+            <if test="bednumber != null">bedNumber = #{bednumber},</if>
+            <if test="articleNumber != null">article_number = #{articleNumber},</if>
+            <if test="articleDescription != null">article_description = #{articleDescription},</if>
+            <if test="requstQuantity != null">requst_quantity = #{requstQuantity},</if>
+            <if test="returnNumber != null">return_number = #{returnNumber},</if>
+            <if test="returnDescription != null">return_description = #{returnDescription},</if>
+            <if test="returnQuantity != null">return_quantity = #{returnQuantity},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDormArticleById" parameterType="Long">
+        delete from dorm_article where id = #{id}
+    </delete>
+
+    <delete id="deleteDormArticleByIds" parameterType="String">
+        delete from dorm_article where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

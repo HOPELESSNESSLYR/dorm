@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.tune.mapper.DormStayRetreatTuneMapper">
+    
+    <resultMap type="DormStayRetreatTune" id="DormStayRetreatTuneResult">
+        <result property="id"    column="ID"    />
+        <result property="areaNumber"    column="area_number"    />
+        <result property="floorNumber"    column="floor_number"    />
+        <result property="dormFloor"    column="dorm_floor"    />
+        <result property="roomNumber"    column="room_number"    />
+        <result property="idnumber"    column="idNumber"    />
+        <result property="jobnumber"    column="jobNumber"    />
+        <result property="name"    column="name"    />
+        <result property="department1"    column="department1"    />
+        <result property="department2"    column="department2"    />
+        <result property="department3"    column="department3"    />
+        <result property="job"    column="job"    />
+        <result property="sex"    column="sex"    />
+        <result property="phone"    column="phone"    />
+        <result property="location"    column="location"    />
+        <result property="address"    column="address"    />
+        <result property="type"    column="type"    />
+        <result property="applyDate"    column="apply_date"    />
+        <result property="bednumber"    column="bedNumber"    />
+        <result property="wardrobe"    column="wardrobe"    />
+        <result property="reason"    column="reason"    />
+        <result property="livedate"    column="liveDate"    />
+        <result property="retreatdate"    column="retreatDate"    />
+        <result property="retreattype"    column="retreatType"    />
+        <result property="emergencycontact"    column="emergencyContact"    />
+        <result property="relationship"    column="relationShip"    />
+        <result property="emergencyphone"    column="emergencyPhone"    />
+        <result property="changenumber"    column="changeNumber"    />
+        <result property="changebed"    column="changeBed"    />
+        <result property="changedate"    column="changeDate"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="generalCommissioner"    column="general_commissioner"    />
+        <result property="adminname"    column="adminName"    />
+        <result property="applyname"    column="applyName"    />
+        <result property="hcmupdate"    column="hcmUpdate"    />
+        <result property="liveddays"    column="liveddays"    />
+        <result property="enddate"    column="enddate"    />
+        <result property="leaveoffday"    column="leaveoffday"    />
+        <result property="currentMonthLiveDays"    column="current_month_live_days"    />
+    </resultMap>
+
+    <sql id="selectDormStayRetreatTuneVo">
+        select ID, area_number, floor_number, dorm_floor, room_number, idNumber, jobNumber, name, department1, department2, department3, job, sex, phone, location, address, type, apply_date, bedNumber, wardrobe, reason, liveDate, retreatDate, retreatType, emergencyContact, relationShip, emergencyPhone, changeNumber, changeBed, changeDate, remarks, general_commissioner, adminName, applyName, hcmUpdate, liveddays,  enddate, leaveoffday, current_month_live_days from dorm_stay_retreat_tune
+    </sql>
+
+    <select id="selectDormStayRetreatTuneList" parameterType="DormStayRetreatTune" resultMap="DormStayRetreatTuneResult">
+        <include refid="selectDormStayRetreatTuneVo"/>
+        <where>  
+            <if test="areaNumber != null  and areaNumber != ''"> and area_number = #{areaNumber}</if>
+            <if test="floorNumber != null  and floorNumber != ''"> and floor_number = #{floorNumber}</if>
+            <if test="dormFloor != null  and dormFloor != ''"> and dorm_floor = #{dormFloor}</if>
+            <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
+            <if test="idnumber != null  and idnumber != ''"> and idNumber = #{idnumber}</if>
+            <if test="jobnumber != null  and jobnumber != ''"> and jobNumber = #{jobnumber}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="department1 != null  and department1 != ''"> and department1 = #{department1}</if>
+            <if test="department2 != null  and department2 != ''"> and department2 = #{department2}</if>
+            <if test="department3 != null  and department3 != ''"> and department3 = #{department3}</if>
+            <if test="job != null  and job != ''"> and job = #{job}</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="location != null  and location != ''"> and location = #{location}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="applyDate != null "> and apply_date = #{applyDate}</if>
+            <if test="bednumber != null  and bednumber != ''"> and bedNumber = #{bednumber}</if>
+            <if test="wardrobe != null "> and wardrobe = #{wardrobe}</if>
+            <if test="reason != null  and reason != ''"> and reason = #{reason}</if>
+            <if test="livedate != null "> and liveDate = #{livedate}</if>
+            <if test="retreatdate != null "> and retreatDate = #{retreatdate}</if>
+            <if test="retreattype != null "> and retreatType = #{retreattype}</if>
+            <if test="emergencycontact != null  and emergencycontact != ''"> and emergencyContact = #{emergencycontact}</if>
+            <if test="relationship != null  and relationship != ''"> and relationShip = #{relationship}</if>
+            <if test="emergencyphone != null  and emergencyphone != ''"> and emergencyPhone = #{emergencyphone}</if>
+            <if test="changenumber != null  and changenumber != ''"> and changeNumber = #{changenumber}</if>
+            <if test="changebed != null  and changebed != ''"> and changeBed = #{changebed}</if>
+            <if test="changedate != null "> and changeDate = #{changedate}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="generalCommissioner != null  and generalCommissioner != ''"> and general_commissioner = #{generalCommissioner}</if>
+            <if test="adminname != null  and adminname != ''"> and adminName like concat('%', #{adminname}, '%')</if>
+            <if test="applyname != null  and applyname != ''"> and applyName like concat('%', #{applyname}, '%')</if>
+            <if test="hcmupdate != null  and hcmupdate != ''"> and hcmUpdate = #{hcmupdate}</if>
+            <if test="liveddays != null "> and liveddays = #{liveddays}</if>
+            <if test="enddate != null "> and enddate = #{enddate}</if>
+            <if test="leaveoffday != null  and leaveoffday != ''"> and leaveoffday = #{leaveoffday}</if>
+            <if test="currentMonthLiveDays != null "> and current_month_live_days = #{currentMonthLiveDays}</if>
+        </where>
+        order by ID desc
+    </select>
+    
+    <select id="selectDormStayRetreatTuneById" parameterType="Long" resultMap="DormStayRetreatTuneResult">
+        <include refid="selectDormStayRetreatTuneVo"/>
+        where ID = #{id}
+    </select>
+
+    <select id="selectDormStayRetreatTuneByIDnumber" parameterType="String" resultMap="DormStayRetreatTuneResult">
+        <include refid="selectDormStayRetreatTuneVo"/>
+        where idNumber = #{idnumber}
+    </select>
+
+    <insert id="insertDormStayRetreatTune" parameterType="DormStayRetreatTune" useGeneratedKeys="true" keyProperty="id">
+        insert into dorm_stay_retreat_tune
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="areaNumber != null and areaNumber != ''">area_number,</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number,</if>
+            <if test="dormFloor != null and dormFloor != ''">dorm_floor,</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number,</if>
+            <if test="idnumber != null and idnumber != ''">idNumber,</if>
+            <if test="jobnumber != null and jobnumber != ''">jobNumber,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="department1 != null and department1 != ''">department1,</if>
+            <if test="department2 != null and department2 != ''">department2,</if>
+            <if test="department3 != null and department3 != ''">department3,</if>
+            <if test="job != null and job != ''">job,</if>
+            <if test="sex != null and sex != ''">sex,</if>
+            <if test="phone != null and phone != ''">phone,</if>
+            <if test="location != null and location != ''">location,</if>
+            <if test="address != null and address != ''">address,</if>
+            <if test="type != null">type,</if>
+            <if test="applyDate != null">apply_date,</if>
+            <if test="bednumber != null and bednumber != ''">bedNumber,</if>
+            <if test="wardrobe != null">wardrobe,</if>
+            <if test="reason != null and reason != ''">reason,</if>
+            <if test="livedate != null">liveDate,</if>
+            <if test="retreatdate != null">retreatDate,</if>
+            <if test="retreattype != null">retreatType,</if>
+            <if test="emergencycontact != null and emergencycontact != ''">emergencyContact,</if>
+            <if test="relationship != null and relationship != ''">relationShip,</if>
+            <if test="emergencyphone != null and emergencyphone != ''">emergencyPhone,</if>
+            <if test="changenumber != null">changeNumber,</if>
+            <if test="changebed != null">changeBed,</if>
+            <if test="changedate != null">changeDate,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="generalCommissioner != null">general_commissioner,</if>
+            <if test="adminname != null">adminName,</if>
+            <if test="applyname != null">applyName,</if>
+            <if test="hcmupdate != null and hcmupdate != ''">hcmUpdate,</if>
+            <if test="liveddays != null">liveddays,</if>
+            <if test="enddate != null">enddate,</if>
+            <if test="leaveoffday != null">leaveoffday,</if>
+            <if test="currentMonthLiveDays != null">current_month_live_days,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="areaNumber != null and areaNumber != ''">#{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">#{floorNumber},</if>
+            <if test="dormFloor != null and dormFloor != ''">#{dormFloor},</if>
+            <if test="roomNumber != null and roomNumber != ''">#{roomNumber},</if>
+            <if test="idnumber != null and idnumber != ''">#{idnumber},</if>
+            <if test="jobnumber != null and jobnumber != ''">#{jobnumber},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="department1 != null and department1 != ''">#{department1},</if>
+            <if test="department2 != null and department2 != ''">#{department2},</if>
+            <if test="department3 != null and department3 != ''">#{department3},</if>
+            <if test="job != null and job != ''">#{job},</if>
+            <if test="sex != null and sex != ''">#{sex},</if>
+            <if test="phone != null and phone != ''">#{phone},</if>
+            <if test="location != null and location != ''">#{location},</if>
+            <if test="address != null and address != ''">#{address},</if>
+            <if test="type != null">#{type},</if>
+            <if test="applyDate != null">#{applyDate},</if>
+            <if test="bednumber != null and bednumber != ''">#{bednumber},</if>
+            <if test="wardrobe != null">#{wardrobe},</if>
+            <if test="reason != null and reason != ''">#{reason},</if>
+            <if test="livedate != null">#{livedate},</if>
+            <if test="retreatdate != null">#{retreatdate},</if>
+            <if test="retreattype != null">#{retreattype},</if>
+            <if test="emergencycontact != null and emergencycontact != ''">#{emergencycontact},</if>
+            <if test="relationship != null and relationship != ''">#{relationship},</if>
+            <if test="emergencyphone != null and emergencyphone != ''">#{emergencyphone},</if>
+            <if test="changenumber != null">#{changenumber},</if>
+            <if test="changebed != null">#{changebed},</if>
+            <if test="changedate != null">#{changedate},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="generalCommissioner != null">#{generalCommissioner},</if>
+            <if test="adminname != null">#{adminname},</if>
+            <if test="applyname != null">#{applyname},</if>
+            <if test="hcmupdate != null and hcmupdate != ''">#{hcmupdate},</if>
+            <if test="liveddays != null">#{liveddays},</if>
+            <if test="enddate != null">#{enddate},</if>
+            <if test="leaveoffday != null">#{leaveoffday},</if>
+            <if test="currentMonthLiveDays != null">#{currentMonthLiveDays},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDormStayRetreatTune" parameterType="DormStayRetreatTune">
+        update dorm_stay_retreat_tune
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="areaNumber != null and areaNumber != ''">area_number = #{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number = #{floorNumber},</if>
+            <if test="dormFloor != null and dormFloor != ''">dorm_floor = #{dormFloor},</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number = #{roomNumber},</if>
+            <if test="idnumber != null and idnumber != ''">idNumber = #{idnumber},</if>
+            <if test="jobnumber != null and jobnumber != ''">jobNumber = #{jobnumber},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="department1 != null and department1 != ''">department1 = #{department1},</if>
+            <if test="department2 != null and department2 != ''">department2 = #{department2},</if>
+            <if test="department3 != null and department3 != ''">department3 = #{department3},</if>
+            <if test="job != null and job != ''">job = #{job},</if>
+            <if test="sex != null and sex != ''">sex = #{sex},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="location != null and location != ''">location = #{location},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="applyDate != null">apply_date = #{applyDate},</if>
+            <if test="bednumber != null and bednumber != ''">bedNumber = #{bednumber},</if>
+            <if test="wardrobe != null">wardrobe = #{wardrobe},</if>
+            <if test="reason != null and reason != ''">reason = #{reason},</if>
+            <if test="livedate != null">liveDate = #{livedate},</if>
+            <if test="retreatdate != null">retreatDate = #{retreatdate},</if>
+            <if test="retreattype != null">retreatType = #{retreattype},</if>
+            <if test="emergencycontact != null and emergencycontact != ''">emergencyContact = #{emergencycontact},</if>
+            <if test="relationship != null and relationship != ''">relationShip = #{relationship},</if>
+            <if test="emergencyphone != null and emergencyphone != ''">emergencyPhone = #{emergencyphone},</if>
+            <if test="changenumber != null">changeNumber = #{changenumber},</if>
+            <if test="changebed != null">changeBed = #{changebed},</if>
+            <if test="changedate != null">changeDate = #{changedate},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="generalCommissioner != null">general_commissioner = #{generalCommissioner},</if>
+            <if test="adminname != null">adminName = #{adminname},</if>
+            <if test="applyname != null">applyName = #{applyname},</if>
+            <if test="hcmupdate != null and hcmupdate != ''">hcmUpdate = #{hcmupdate},</if>
+            <if test="liveddays != null">liveddays = #{liveddays},</if>
+            <if test="enddate != null">enddate = #{enddate},</if>
+            <if test="leaveoffday != null">leaveoffday = #{leaveoffday},</if>
+            <if test="currentMonthLiveDays != null">current_month_live_days = #{currentMonthLiveDays},</if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteDormStayRetreatTuneById" parameterType="Long">
+        delete from dorm_stay_retreat_tune where ID = #{id}
+    </delete>
+
+    <delete id="deleteDormStayRetreatTuneByIds" parameterType="String">
+        delete from dorm_stay_retreat_tune where ID in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

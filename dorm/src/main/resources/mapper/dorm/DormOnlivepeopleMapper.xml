@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.onlivepeople.mapper.DormOnlivepeopleMapper">
+
+    <resultMap type="DormOnlivepeople" id="DormOnlivepeopleResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="sex"    column="sex"    />
+        <result property="native1"    column="native1"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="address"    column="address"    />
+        <result property="idnumber"    column="IDnumber"    />
+        <result property="company"    column="company"    />
+        <result property="begindate"    column="begindate"    />
+        <result property="enddate"    column="enddate"    />
+        <result property="phone"    column="phone"    />
+        <result property="createdAt"    column="created_at"    />
+        <result property="flag"    column="flag"    />
+        <result property="remotepath"    column="remotepath"    />
+    </resultMap>
+
+    <sql id="selectDormOnlivepeopleVo">
+        select id, name, sex, native1, birthday, address, IDnumber, company, begindate, enddate, phone, created_at, flag, remotepath from dorm_onlivepeople
+    </sql>
+
+    <select id="selectDormOnlivepeopleList" parameterType="DormOnlivepeople" resultMap="DormOnlivepeopleResult">
+        <include refid="selectDormOnlivepeopleVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="sex != null  and sex != ''"> and sex = #{sex}</if>
+            <if test="native1 != null  and native1 != ''"> and native1 = #{native1}</if>
+            <if test="birthday != null "> and birthday = #{birthday}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="idnumber != null "> and IDnumber = #{idnumber}</if>
+            <if test="company != null  and company != ''"> and company = #{company}</if>
+            <if test="begindate != null "> and begindate = #{begindate}</if>
+            <if test="enddate != null  and enddate != ''"> and enddate = #{enddate}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="createdAt != null "> and created_at = #{createdAt}</if>
+            <if test="flag != null  and flag != ''"> and flag = #{flag}</if>
+            <if test="remotepath != null  and remotepath != ''"> and remotepath = #{remotepath}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectDormOnlivepeopleById" parameterType="Long" resultMap="DormOnlivepeopleResult">
+        <include refid="selectDormOnlivepeopleVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDormOnlivepeopleByIDnumber" parameterType="String" resultMap="DormOnlivepeopleResult">
+        <include refid="selectDormOnlivepeopleVo"/>
+        where IDnumber = #{idnumber}
+    </select>
+
+    <insert id="insertDormOnlivepeople" parameterType="DormOnlivepeople" useGeneratedKeys="true" keyProperty="id">
+        insert into dorm_onlivepeople
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="sex != null">sex,</if>
+            <if test="native1 != null">native1,</if>
+            <if test="birthday != null">birthday,</if>
+            <if test="address != null">address,</if>
+            <if test="idnumber != null">IDnumber,</if>
+            <if test="company != null">company,</if>
+            <if test="begindate != null">begindate,</if>
+            <if test="enddate != null">enddate,</if>
+            <if test="phone != null">phone,</if>
+            <if test="createdAt != null">created_at,</if>
+            <if test="flag != null">flag,</if>
+            <if test="remotepath != null">remotepath,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="native1 != null">#{native1},</if>
+            <if test="birthday != null">#{birthday},</if>
+            <if test="address != null">#{address},</if>
+            <if test="idnumber != null">#{idnumber},</if>
+            <if test="company != null">#{company},</if>
+            <if test="begindate != null">#{begindate},</if>
+            <if test="enddate != null">#{enddate},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="createdAt != null">#{createdAt},</if>
+            <if test="flag != null">#{flag},</if>
+            <if test="remotepath != null">#{remotepath},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDormOnlivepeople" parameterType="DormOnlivepeople">
+        update dorm_onlivepeople
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="native1 != null">native1 = #{native1},</if>
+            <if test="birthday != null">birthday = #{birthday},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="idnumber != null">IDnumber = #{idnumber},</if>
+            <if test="company != null">company = #{company},</if>
+            <if test="begindate != null">begindate = #{begindate},</if>
+            <if test="enddate != null">enddate = #{enddate},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="createdAt != null">created_at = #{createdAt},</if>
+            <if test="flag != null">flag = #{flag},</if>
+            <if test="remotepath != null">remotepath = #{remotepath},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDormOnlivepeopleById" parameterType="Long">
+        delete from dorm_onlivepeople where id = #{id}
+    </delete>
+
+    <delete id="deleteDormOnlivepeopleByIds" parameterType="String">
+        delete from dorm_onlivepeople where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

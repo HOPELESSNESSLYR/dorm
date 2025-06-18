@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.dorm.mapper.DormSslmanageMapper">
+    
+    <resultMap type="DormSslmanage" id="DormSslmanageResult">
+        <result property="id"    column="ID"    />
+        <result property="areaName"    column="area_name"    />
+        <result property="areaNumber"    column="area_number"    />
+        <result property="floorName"    column="floor_name"    />
+        <result property="floorNumber"    column="floor_number"    />
+        <result property="cavenumber"    column="caveNumber"    />
+        <result property="floorLocation"    column="floor_location"    />
+        <result property="floornumber"    column="floorNumber"    />
+        <result property="floorCname"    column="floor_cname"    />
+        <result property="floorCdate"    column="floor_cdate"    />
+        <result property="adminname"    column="adminName"    />
+        <result property="livenumber"    column="liveNumber"    />
+        <result property="remarks"    column="remarks"    />
+    </resultMap>
+
+    <sql id="selectDormSslmanageVo">
+        select ID, area_name, area_number, floor_name, floor_number, caveNumber, floor_location, floorNumber, floor_cname, floor_cdate, adminName, liveNumber, remarks from dorm_sslmanage
+    </sql>
+
+    <select id="selectDormSslmanageList" parameterType="DormSslmanage" resultMap="DormSslmanageResult">
+        <include refid="selectDormSslmanageVo"/>
+        <where>  
+            <if test="areaName != null  and areaName != ''"> and area_name like concat('%', #{areaName}, '%')</if>
+            <if test="floorName != null  and floorName != ''"> and floor_name like concat('%', #{floorName}, '%')</if>
+            <if test="adminname != null  and adminname != ''"> and adminName like concat('%', #{adminname}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectDormSslmanageById" parameterType="Long" resultMap="DormSslmanageResult">
+        <include refid="selectDormSslmanageVo"/>
+        where ID = #{id}
+    </select>
+        
+    <insert id="insertDormSslmanage" parameterType="DormSslmanage" useGeneratedKeys="true" keyProperty="id">
+        insert into dorm_sslmanage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="areaName != null">area_name,</if>
+            <if test="areaNumber != null">area_number,</if>
+            <if test="floorName != null">floor_name,</if>
+            <if test="floorNumber != null">floor_number,</if>
+            <if test="cavenumber != null">caveNumber,</if>
+            <if test="floorLocation != null">floor_location,</if>
+            <if test="floornumber != null">floorNumber,</if>
+            <if test="floorCname != null">floor_cname,</if>
+            <if test="floorCdate != null">floor_cdate,</if>
+            <if test="adminname != null">adminName,</if>
+            <if test="livenumber != null">liveNumber,</if>
+            <if test="remarks != null">remarks,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="areaName != null">#{areaName},</if>
+            <if test="areaNumber != null">#{areaNumber},</if>
+            <if test="floorName != null">#{floorName},</if>
+            <if test="floorNumber != null">#{floorNumber},</if>
+            <if test="cavenumber != null">#{cavenumber},</if>
+            <if test="floorLocation != null">#{floorLocation},</if>
+            <if test="floornumber != null">#{floornumber},</if>
+            <if test="floorCname != null">#{floorCname},</if>
+            <if test="floorCdate != null">#{floorCdate},</if>
+            <if test="adminname != null">#{adminname},</if>
+            <if test="livenumber != null">#{livenumber},</if>
+            <if test="remarks != null">#{remarks},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDormSslmanage" parameterType="DormSslmanage">
+        update dorm_sslmanage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="areaName != null">area_name = #{areaName},</if>
+            <if test="areaNumber != null">area_number = #{areaNumber},</if>
+            <if test="floorName != null">floor_name = #{floorName},</if>
+            <if test="floorNumber != null">floor_number = #{floorNumber},</if>
+            <if test="cavenumber != null">caveNumber = #{cavenumber},</if>
+            <if test="floorLocation != null">floor_location = #{floorLocation},</if>
+            <if test="floornumber != null">floorNumber = #{floornumber},</if>
+            <if test="floorCname != null">floor_cname = #{floorCname},</if>
+            <if test="floorCdate != null">floor_cdate = #{floorCdate},</if>
+            <if test="adminname != null">adminName = #{adminname},</if>
+            <if test="livenumber != null">liveNumber = #{livenumber},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteDormSslmanageById" parameterType="Long">
+        delete from dorm_sslmanage where ID = #{id}
+    </delete>
+
+    <delete id="deleteDormSslmanageByIds" parameterType="String">
+        delete from dorm_sslmanage where ID in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

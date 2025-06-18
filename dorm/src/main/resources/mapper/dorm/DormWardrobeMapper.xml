@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.wardrobe.mapper.DormWardrobeMapper">
+    
+    <resultMap type="DormWardrobe" id="DormWardrobeResult">
+        <result property="id"    column="ID"    />
+        <result property="areaNumber"    column="area_number"    />
+        <result property="floorNumber"    column="floor_number"    />
+        <result property="dormFloor"    column="dorm_floor"    />
+        <result property="roomNumber"    column="room_number"    />
+        <result property="name"    column="name"    />
+        <result property="jobnumber"    column="jobNumber"    />
+        <result property="wardrobe"    column="wardrobe"    />
+        <result property="wardrobestatus"    column="wardrobeStatus"    />
+        <result property="whether"    column="whether"    />
+        <result property="remarks"    column="remarks"    />
+    </resultMap>
+
+    <sql id="selectDormWardrobeVo">
+        select ID, area_number, floor_number, dorm_floor, room_number, name, jobNumber, wardrobe, wardrobeStatus, whether, remarks from dorm_wardrobe
+    </sql>
+
+    <select id="selectDormWardrobeList" parameterType="DormWardrobe" resultMap="DormWardrobeResult">
+        <include refid="selectDormWardrobeVo"/>
+        <where>  
+            <if test="areaNumber != null  and areaNumber != ''"> and area_number = #{areaNumber}</if>
+            <if test="floorNumber != null  and floorNumber != ''"> and floor_number = #{floorNumber}</if>
+            <if test="dormFloor != null  and dormFloor != ''"> and dorm_floor = #{dormFloor}</if>
+            <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="jobnumber != null  and jobnumber != ''"> and jobNumber = #{jobnumber}</if>
+            <if test="wardrobe != null  and wardrobe != ''"> and wardrobe = #{wardrobe}</if>
+            <if test="wardrobestatus != null "> and wardrobeStatus = #{wardrobestatus}</if>
+            <if test="whether != null "> and whether = #{whether}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+        </where>
+    </select>
+    
+    <select id="selectDormWardrobeById" parameterType="Long" resultMap="DormWardrobeResult">
+        <include refid="selectDormWardrobeVo"/>
+        where ID = #{id}
+    </select>
+    <select id="selectDormWardrobeByJobnumber" parameterType="String" resultMap="DormWardrobeResult">
+        <include refid="selectDormWardrobeVo"/>
+        where jobNumber = #{jobnumber}
+    </select>
+
+    <select id="selectDormWardrobeBymap" parameterType="hashmap" resultMap="DormWardrobeResult">
+        <include refid="selectDormWardrobeVo"/>
+        where area_number = #{area_number} and floor_number = #{floor_number} and dorm_floor = #{dorm_floor} and room_number = #{room_number} and wardrobe = #{wardrobe}
+    </select>
+
+    <insert id="insertDormWardrobe" parameterType="DormWardrobe" useGeneratedKeys="true" keyProperty="id">
+        insert into dorm_wardrobe
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="areaNumber != null and areaNumber != ''">area_number,</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number,</if>
+            <if test="dormFloor != null and dormFloor != ''">dorm_floor,</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="jobnumber != null and jobnumber != ''">jobNumber,</if>
+            <if test="wardrobe != null and wardrobe != ''">wardrobe,</if>
+            <if test="wardrobestatus != null">wardrobeStatus,</if>
+            <if test="whether != null">whether,</if>
+            <if test="remarks != null and remarks != ''">remarks,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="areaNumber != null and areaNumber != ''">#{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">#{floorNumber},</if>
+            <if test="dormFloor != null and dormFloor != ''">#{dormFloor},</if>
+            <if test="roomNumber != null and roomNumber != ''">#{roomNumber},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="jobnumber != null and jobnumber != ''">#{jobnumber},</if>
+            <if test="wardrobe != null and wardrobe != ''">#{wardrobe},</if>
+            <if test="wardrobestatus != null">#{wardrobestatus},</if>
+            <if test="whether != null">#{whether},</if>
+            <if test="remarks != null and remarks != ''">#{remarks},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDormWardrobe" parameterType="DormWardrobe">
+        update dorm_wardrobe
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="areaNumber != null and areaNumber != ''">area_number = #{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number = #{floorNumber},</if>
+            <if test="dormFloor != null and dormFloor != ''">dorm_floor = #{dormFloor},</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number = #{roomNumber},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="jobnumber != null and jobnumber != ''">jobNumber = #{jobnumber},</if>
+            <if test="wardrobe != null and wardrobe != ''">wardrobe = #{wardrobe},</if>
+            <if test="wardrobestatus != null">wardrobeStatus = #{wardrobestatus},</if>
+            <if test="whether != null">whether = #{whether},</if>
+            <if test="remarks != null and remarks != ''">remarks = #{remarks},</if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteDormWardrobeById" parameterType="Long">
+        delete from dorm_wardrobe where ID = #{id}
+    </delete>
+
+    <delete id="deleteDormWardrobeByIds" parameterType="String">
+        delete from dorm_wardrobe where ID in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

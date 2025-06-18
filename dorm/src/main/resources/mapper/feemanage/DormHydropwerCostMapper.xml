@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.cost.mapper.DormHydropwerCostMapper">
+    
+    <resultMap type="DormHydropwerCost" id="DormHydropwerCostResult">
+        <result property="id"    column="ID"    />
+        <result property="costDate"    column="cost_date"    />
+        <result property="areaNumber"    column="area_number"    />
+        <result property="floorNumber"    column="floor_number"    />
+        <result property="dormFloor"    column="dorm_floor"    />
+        <result property="roomNumber"    column="room_number"    />
+        <result property="jobnumber"    column="jobNumber"    />
+        <result property="idnumber"    column="idNumber"    />
+        <result property="monthDayall"    column="month_dayall"    />
+        <result property="personHotwater"    column="person_hotwater"    />
+        <result property="personColdwater"    column="person_coldwater"    />
+        <result property="personElectric"    column="person_electric"    />
+        <result property="publicHotwater"    column="public_hotwater"    />
+        <result property="publicColdwater"    column="public_coldwater"    />
+        <result property="publicElectric"    column="public_electric"    />
+        <result property="costall"    column="costAll"    />
+        <result property="type"    column="type"    />
+    </resultMap>
+
+    <sql id="selectDormHydropwerCostVo">
+        select ID, cost_date, area_number, floor_number, dorm_floor, room_number, jobNumber, idNumber, month_dayall, person_hotwater, person_coldwater, person_electric, public_hotwater, public_coldwater, public_electric, costAll, type from dorm_hydropwer_cost
+    </sql>
+
+    <select id="selectDormHydropwerCostList" parameterType="DormHydropwerCost" resultMap="DormHydropwerCostResult">
+        <include refid="selectDormHydropwerCostVo"/>
+        <where>  
+            <if test="costDate != null "> and cost_date = #{costDate}</if>
+            <if test="areaNumber != null "> and area_number = #{areaNumber}</if>
+            <if test="floorNumber != null "> and floor_number = #{floorNumber}</if>
+            <if test="dormFloor != null "> and dorm_floor = #{dormFloor}</if>
+            <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
+            <if test="jobnumber != null  and jobnumber != ''"> and jobNumber = #{jobnumber}</if>
+            <if test="idnumber != null  and idnumber != ''"> and idNumber = #{idnumber}</if>
+            <if test="monthDayall != null "> and month_dayall = #{monthDayall}</if>
+            <if test="personHotwater != null "> and person_hotwater = #{personHotwater}</if>
+            <if test="personColdwater != null "> and person_coldwater = #{personColdwater}</if>
+            <if test="personElectric != null "> and person_electric = #{personElectric}</if>
+            <if test="publicHotwater != null "> and public_hotwater = #{publicHotwater}</if>
+            <if test="publicColdwater != null "> and public_coldwater = #{publicColdwater}</if>
+            <if test="publicElectric != null "> and public_electric = #{publicElectric}</if>
+            <if test="costall != null "> and costAll = #{costall}</if>
+            <if test="type != null "> and type = #{type}</if>
+        </where>
+    </select>
+    
+    <select id="selectDormHydropwerCostById" parameterType="Long" resultMap="DormHydropwerCostResult">
+        <include refid="selectDormHydropwerCostVo"/>
+        where ID = #{id}
+    </select>
+        
+    <insert id="insertDormHydropwerCost" parameterType="DormHydropwerCost" useGeneratedKeys="true" keyProperty="id">
+        insert into dorm_hydropwer_cost
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="costDate != null">cost_date,</if>
+            <if test="areaNumber != null">area_number,</if>
+            <if test="floorNumber != null">floor_number,</if>
+            <if test="dormFloor != null">dorm_floor,</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number,</if>
+            <if test="jobnumber != null">jobNumber,</if>
+            <if test="idnumber != null">idNumber,</if>
+            <if test="monthDayall != null">month_dayall,</if>
+            <if test="personHotwater != null">person_hotwater,</if>
+            <if test="personColdwater != null">person_coldwater,</if>
+            <if test="personElectric != null">person_electric,</if>
+            <if test="publicHotwater != null">public_hotwater,</if>
+            <if test="publicColdwater != null">public_coldwater,</if>
+            <if test="publicElectric != null">public_electric,</if>
+            <if test="costall != null">costAll,</if>
+            <if test="type != null">type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="costDate != null">#{costDate},</if>
+            <if test="areaNumber != null">#{areaNumber},</if>
+            <if test="floorNumber != null">#{floorNumber},</if>
+            <if test="dormFloor != null">#{dormFloor},</if>
+            <if test="roomNumber != null and roomNumber != ''">#{roomNumber},</if>
+            <if test="jobnumber != null">#{jobnumber},</if>
+            <if test="idnumber != null">#{idnumber},</if>
+            <if test="monthDayall != null">#{monthDayall},</if>
+            <if test="personHotwater != null">#{personHotwater},</if>
+            <if test="personColdwater != null">#{personColdwater},</if>
+            <if test="personElectric != null">#{personElectric},</if>
+            <if test="publicHotwater != null">#{publicHotwater},</if>
+            <if test="publicColdwater != null">#{publicColdwater},</if>
+            <if test="publicElectric != null">#{publicElectric},</if>
+            <if test="costall != null">#{costall},</if>
+            <if test="type != null">#{type},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDormHydropwerCost" parameterType="DormHydropwerCost">
+        update dorm_hydropwer_cost
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="costDate != null">cost_date = #{costDate},</if>
+            <if test="areaNumber != null">area_number = #{areaNumber},</if>
+            <if test="floorNumber != null">floor_number = #{floorNumber},</if>
+            <if test="dormFloor != null">dorm_floor = #{dormFloor},</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number = #{roomNumber},</if>
+            <if test="jobnumber != null">jobNumber = #{jobnumber},</if>
+            <if test="idnumber != null">idNumber = #{idnumber},</if>
+            <if test="monthDayall != null">month_dayall = #{monthDayall},</if>
+            <if test="personHotwater != null">person_hotwater = #{personHotwater},</if>
+            <if test="personColdwater != null">person_coldwater = #{personColdwater},</if>
+            <if test="personElectric != null">person_electric = #{personElectric},</if>
+            <if test="publicHotwater != null">public_hotwater = #{publicHotwater},</if>
+            <if test="publicColdwater != null">public_coldwater = #{publicColdwater},</if>
+            <if test="publicElectric != null">public_electric = #{publicElectric},</if>
+            <if test="costall != null">costAll = #{costall},</if>
+            <if test="type != null">type = #{type},</if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteDormHydropwerCostById" parameterType="Long">
+        delete from dorm_hydropwer_cost where ID = #{id}
+    </delete>
+
+    <delete id="deleteDormHydropwerCostByIds" parameterType="String">
+        delete from dorm_hydropwer_cost where ID in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

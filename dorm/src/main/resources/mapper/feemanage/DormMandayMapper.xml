@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.manday.mapper.DormMandayMapper">
+    
+    <resultMap type="DormManday" id="DormMandayResult">
+        <result property="id"    column="ID"    />
+        <result property="areaNumber"    column="area_number"    />
+        <result property="floorNumber"    column="floor_number"    />
+        <result property="dormFloor"    column="dorm_floor"    />
+        <result property="roomNumber"    column="room_number"    />
+        <result property="idnumber"    column="idNumber"    />
+        <result property="livedays"    column="liveDays"    />
+        <result property="date"    column="date"    />
+        <result property="type"    column="type"    />
+        <result property="jobnumber"    column="jobNumber"    />
+    </resultMap>
+
+    <sql id="selectDormMandayVo">
+        select ID, area_number, floor_number, dorm_floor, room_number, idNumber, liveDays, date, type, jobNumber from dorm_manday
+    </sql>
+
+    <select id="selectDormMandayList" parameterType="DormManday" resultMap="DormMandayResult">
+        <include refid="selectDormMandayVo"/>
+        <where>  
+            <if test="areaNumber != null "> and area_number = #{areaNumber}</if>
+            <if test="floorNumber != null "> and floor_number = #{floorNumber}</if>
+            <if test="dormFloor != null "> and dorm_floor = #{dormFloor}</if>
+            <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
+            <if test="idnumber != null "> and idNumber = #{idnumber}</if>
+            <if test="livedays != null "> and liveDays = #{livedays}</if>
+            <if test="date != null "> and date = #{date}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="jobnumber != null  and jobnumber != ''"> and jobNumber = #{jobnumber}</if>
+        </where>
+    </select>
+    
+    <select id="selectDormMandayById" parameterType="Long" resultMap="DormMandayResult">
+        <include refid="selectDormMandayVo"/>
+        where ID = #{id}
+    </select>
+        
+    <insert id="insertDormManday" parameterType="DormManday" useGeneratedKeys="true" keyProperty="id">
+        insert into dorm_manday
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="areaNumber != null">area_number,</if>
+            <if test="floorNumber != null">floor_number,</if>
+            <if test="dormFloor != null">dorm_floor,</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number,</if>
+            <if test="idnumber != null">idNumber,</if>
+            <if test="livedays != null">liveDays,</if>
+            <if test="date != null">date,</if>
+            <if test="type != null">type,</if>
+            <if test="jobnumber != null and jobnumber != ''">jobNumber,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="areaNumber != null">#{areaNumber},</if>
+            <if test="floorNumber != null">#{floorNumber},</if>
+            <if test="dormFloor != null">#{dormFloor},</if>
+            <if test="roomNumber != null and roomNumber != ''">#{roomNumber},</if>
+            <if test="idnumber != null">#{idnumber},</if>
+            <if test="livedays != null">#{livedays},</if>
+            <if test="date != null">#{date},</if>
+            <if test="type != null">#{type},</if>
+            <if test="jobnumber != null and jobnumber != ''">#{jobnumber},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDormManday" parameterType="DormManday">
+        update dorm_manday
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="areaNumber != null">area_number = #{areaNumber},</if>
+            <if test="floorNumber != null">floor_number = #{floorNumber},</if>
+            <if test="dormFloor != null">dorm_floor = #{dormFloor},</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number = #{roomNumber},</if>
+            <if test="idnumber != null">idNumber = #{idnumber},</if>
+            <if test="livedays != null">liveDays = #{livedays},</if>
+            <if test="date != null">date = #{date},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="jobnumber != null and jobnumber != ''">jobNumber = #{jobnumber},</if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteDormMandayById" parameterType="Long">
+        delete from dorm_manday where ID = #{id}
+    </delete>
+
+    <delete id="deleteDormMandayByIds" parameterType="String">
+        delete from dorm_manday where ID in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

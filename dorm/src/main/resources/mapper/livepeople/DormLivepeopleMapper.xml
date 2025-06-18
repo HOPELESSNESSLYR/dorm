@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.livepeople.mapper.DormLivepeopleMapper">
+    
+    <resultMap type="DormLivepeople" id="DormLivepeopleResult">
+        <result property="id"    column="ID"    />
+        <result property="areaNumber"    column="area_number"    />
+        <result property="floorNumber"    column="floor_number"    />
+        <result property="dormFloor"    column="dorm_floor"    />
+        <result property="roomNumber"    column="room_number"    />
+        <result property="checkInaddress"    column="check_inAddress"    />
+        <result property="name"    column="name"    />
+        <result property="idnumber"    column="idNumber"    />
+        <result property="jobnumber"    column="jobNumber"    />
+        <result property="sex"    column="sex"    />
+        <result property="department1"    column="department1"    />
+        <result property="department2"    column="department2"    />
+        <result property="department3"    column="department3"    />
+        <result property="job"    column="job"    />
+        <result property="location"    column="location"    />
+        <result property="address"    column="address"    />
+        <result property="level"    column="level"    />
+        <result property="classes"    column="classes"    />
+        <result property="phone"    column="phone"    />
+        <result property="emergencycontact"    column="emergencyContact"    />
+        <result property="relationship"    column="relationShip"    />
+        <result property="emergencyphone"    column="emergencyPhone"    />
+        <result property="reason"    column="reason"    />
+        <result property="livecheck"    column="liveCheck"    />
+        <result property="livedate"    column="liveDate"    />
+        <result property="quitcheck"    column="quitCheck"    />
+        <result property="retreattype"    column="retreatType"    />
+        <result property="retreatdate"    column="retreatDate"    />
+        <result property="tuneIncheck"    column="tune_inCheck"    />
+        <result property="tuneIndate"    column="tune_inDate"    />
+        <result property="repetitioncheck"    column="repetitionCheck"    />
+        <result property="blacklistcheck"    column="blacklistCheck"    />
+        <result property="bednumber"    column="bedNumber"    />
+        <result property="wardrobe"    column="wardrobe"    />
+        <result property="freecheck"    column="freeCheck"    />
+        <result property="freedays"    column="freeDays"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="cost"    column="cost"    />
+        <result property="temporary"    column="temporary"    />
+        <result property="usearticle"    column="useArticle"    />
+        <result property="guyongstatus"    column="guyongstatus"    />
+        <result property="outjobdate"    column="outjobdate"    />
+        <result property="retreatreason"    column="retreatreason"    />
+        <result property="photo"    column="photo"    />
+    </resultMap>
+
+    <sql id="selectDormLivepeopleVo">
+        select ID, area_number, floor_number, dorm_floor, room_number, check_inAddress, name, idNumber, jobNumber, sex, guyongstatus, outjobdate, retreatreason, department1, department2, department3, job, location, address, level, classes, phone, emergencyContact, relationShip, emergencyPhone, reason, liveCheck, liveDate, quitCheck, retreatType, retreatDate, tune_inCheck, tune_inDate, repetitionCheck, blacklistCheck, bedNumber, wardrobe, freeCheck, freeDays, remarks, cost, temporary, useArticle, photo from dorm_livepeople
+    </sql>
+
+    <select id="selectDormLivepeopleList" parameterType="DormLivepeople" resultMap="DormLivepeopleResult">
+        <include refid="selectDormLivepeopleVo"/>
+        <where>
+            <if test="areaNumber != null  and areaNumber != ''"> and area_number = #{areaNumber}</if>
+            <if test="floorNumber != null  and floorNumber != ''"> and floor_number = #{floorNumber}</if>
+            <if test="dormFloor != null  and dormFloor != ''"> and dorm_floor = #{dormFloor}</if>
+            <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
+            <if test="checkInaddress != null  and checkInaddress != ''"> and check_inAddress = #{checkInaddress}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="idnumber != null  and idnumber != ''"> and idNumber = #{idnumber}</if>
+            <if test="jobnumber != null  and jobnumber != ''"> and jobNumber = #{jobnumber}</if>
+            <if test="sex != null "> and sex = #{sex}</if>
+            <if test="guyongstatus != null  and guyongstatus != ''"> and guyongstatus = #{guyongstatus}</if>
+            <if test="params.beginOutjobdate != null and params.beginOutjobdate != '' and params.endOutjobdate != null and params.endOutjobdate != ''"> and outjobdate between #{params.beginOutjobdate} and #{params.endOutjobdate}</if>
+            <if test="retreatreason != null  and retreatreason != ''"> and retreatreason = #{retreatreason}</if>
+            <if test="department1 != null  and department1 != ''"> and department1 = #{department1}</if>
+            <if test="department2 != null  and department2 != ''"> and department2 = #{department2}</if>
+            <if test="department3 != null  and department3 != ''"> and department3 = #{department3}</if>
+            <if test="job != null  and job != ''"> and job = #{job}</if>
+            <if test="location != null  and location != ''"> and location = #{location}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="level != null  and level != ''"> and level = #{level}</if>
+            <if test="classes != null  and classes != ''"> and classes = #{classes}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="emergencycontact != null  and emergencycontact != ''"> and emergencyContact = #{emergencycontact}</if>
+            <if test="relationship != null  and relationship != ''"> and relationShip = #{relationship}</if>
+            <if test="emergencyphone != null  and emergencyphone != ''"> and emergencyPhone = #{emergencyphone}</if>
+            <if test="reason != null  and reason != ''"> and reason = #{reason}</if>
+            <if test="livecheck != null  and livecheck != ''"> and liveCheck = #{livecheck}</if>
+            <if test="livedate != null "> and liveDate between #{livedate} and DATE_ADD(#{livedate}, INTERVAL 1 month) </if>
+            <if test="quitcheck != null  and quitcheck != ''"> and quitCheck = #{quitcheck}</if>
+            <if test="retreattype != null  and retreattype != ''"> and retreatType = #{retreattype}</if>
+            <if test="retreatdate != null "> and ( retreatDate between #{retreatdate} and DATE_ADD(#{retreatdate}, INTERVAL 1 month))</if>
+            <if test="tuneIncheck != null  and tuneIncheck != ''"> and tune_inCheck = #{tuneIncheck}</if>
+            <if test="tuneIndate != null "> and tune_inDate = #{tuneIndate}</if>
+            <if test="repetitioncheck != null  and repetitioncheck != ''"> and repetitionCheck = #{repetitioncheck}</if>
+            <if test="blacklistcheck != null "> and blacklistCheck = #{blacklistcheck}</if>
+            <if test="bednumber != null  and bednumber != ''"> and bedNumber = #{bednumber}</if>
+            <if test="wardrobe != null  and wardrobe != ''"> and wardrobe = #{wardrobe}</if>
+            <if test="freecheck != null "> and freeCheck = #{freecheck}</if>
+            <if test="freedays != null "> and freeDays = #{freedays}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="cost != null "> and cost = #{cost}</if>
+            <if test="temporary != null "> and temporary = #{temporary}</if>
+            <if test="usearticle != null  and usearticle != ''"> and useArticle = #{usearticle}</if>
+            <if test="photo != null  and photo != ''"> and photo = #{photo}</if>
+        </where>
+        order by ID desc
+    </select>
+
+    <select id="selectDormLivepeopleList2" parameterType="DormLivepeople" resultMap="DormLivepeopleResult">
+        <include refid="selectDormLivepeopleVo"/>
+        where liveCheck = 'X'
+    </select>
+    <select id="selectDormLivepeopleList3" resultMap="DormLivepeopleResult">
+        <include refid="selectDormLivepeopleVo"/>
+        where jobNumber is null
+    </select>
+    <select id="selectDormLivepeopleById" parameterType="Long" resultMap="DormLivepeopleResult">
+        <include refid="selectDormLivepeopleVo"/>
+        where ID = #{id}
+    </select>
+    <select id="selectDormLivepeopleByIDnumber" parameterType="String" resultMap="DormLivepeopleResult">
+        <include refid="selectDormLivepeopleVo"/>
+        where idNumber = #{idnumber}
+    </select>
+    <select id="selectDormLivepeopleListByIDnumber" parameterType="String" resultMap="DormLivepeopleResult">
+        <include refid="selectDormLivepeopleVo"/>
+        where idNumber = #{idnumber}
+    </select>
+    <insert id="insertDormLivepeople" parameterType="DormLivepeople" useGeneratedKeys="true" keyProperty="id">
+        insert into dorm_livepeople
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="areaNumber != null and areaNumber != ''">area_number,</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number,</if>
+            <if test="dormFloor != null and dormFloor != ''">dorm_floor,</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number,</if>
+            <if test="checkInaddress != null and checkInaddress != ''">check_inAddress,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="idnumber != null">idNumber,</if>
+            <if test="jobnumber != null and jobnumber != ''">jobNumber,</if>
+            <if test="sex != null">sex,</if>
+            <if test="guyongstatus != null and guyongstatus != ''">guyongstatus,</if>
+            <if test="outjobdate != null">outjobdate,</if>
+            <if test="retreatreason != null and retreatreason != ''">retreatreason,</if>
+            <if test="department1 != null and department1 != ''">department1,</if>
+            <if test="department2 != null and department2 != ''">department2,</if>
+            <if test="department3 != null and department3 != ''">department3,</if>
+            <if test="job != null and job != ''">job,</if>
+            <if test="location != null and location != ''">location,</if>
+            <if test="address != null and address != ''">address,</if>
+            <if test="level != null">level,</if>
+            <if test="classes != null">classes,</if>
+            <if test="phone != null and phone != ''">phone,</if>
+            <if test="emergencycontact != null and emergencycontact != ''">emergencyContact,</if>
+            <if test="relationship != null and relationship != ''">relationShip,</if>
+            <if test="emergencyphone != null and emergencyphone != ''">emergencyPhone,</if>
+            <if test="reason != null and reason != ''">reason,</if>
+            <if test="livecheck != null">liveCheck,</if>
+            <if test="livedate != null">liveDate,</if>
+            <if test="quitcheck != null">quitCheck,</if>
+            <if test="retreattype != null">retreatType,</if>
+            <if test="retreatdate != null">retreatDate,</if>
+            <if test="tuneIncheck != null">tune_inCheck,</if>
+            <if test="tuneIndate != null">tune_inDate,</if>
+            <if test="repetitioncheck != null">repetitionCheck,</if>
+            <if test="blacklistcheck != null">blacklistCheck,</if>
+            <if test="bednumber != null and bednumber != ''">bedNumber,</if>
+            <if test="wardrobe != null and wardrobe != ''">wardrobe,</if>
+            <if test="freecheck != null">freeCheck,</if>
+            <if test="freedays != null">freeDays,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="cost != null">cost,</if>
+            <if test="temporary != null">temporary,</if>
+            <if test="usearticle != null">useArticle,</if>
+            <if test="photo != null">photo,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="areaNumber != null and areaNumber != ''">#{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">#{floorNumber},</if>
+            <if test="dormFloor != null and dormFloor != ''">#{dormFloor},</if>
+            <if test="roomNumber != null and roomNumber != ''">#{roomNumber},</if>
+            <if test="checkInaddress != null and checkInaddress != ''">#{checkInaddress},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="idnumber != null">#{idnumber},</if>
+            <if test="jobnumber != null and jobnumber != ''">#{jobnumber},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="guyongstatus != null and guyongstatus != ''">#{guyongstatus},</if>
+            <if test="outjobdate != null">#{outjobdate},</if>
+            <if test="retreatreason != null and retreatreason != ''">#{retreatreason},</if>
+            <if test="department1 != null and department1 != ''">#{department1},</if>
+            <if test="department2 != null and department2 != ''">#{department2},</if>
+            <if test="department3 != null and department3 != ''">#{department3},</if>
+            <if test="job != null and job != ''">#{job},</if>
+            <if test="location != null and location != ''">#{location},</if>
+            <if test="address != null and address != ''">#{address},</if>
+            <if test="level != null">#{level},</if>
+            <if test="classes != null">#{classes},</if>
+            <if test="phone != null and phone != ''">#{phone},</if>
+            <if test="emergencycontact != null and emergencycontact != ''">#{emergencycontact},</if>
+            <if test="relationship != null and relationship != ''">#{relationship},</if>
+            <if test="emergencyphone != null and emergencyphone != ''">#{emergencyphone},</if>
+            <if test="reason != null and reason != ''">#{reason},</if>
+            <if test="livecheck != null">#{livecheck},</if>
+            <if test="livedate != null">#{livedate},</if>
+            <if test="quitcheck != null">#{quitcheck},</if>
+            <if test="retreattype != null">#{retreattype},</if>
+            <if test="retreatdate != null">#{retreatdate},</if>
+            <if test="tuneIncheck != null">#{tuneIncheck},</if>
+            <if test="tuneIndate != null">#{tuneIndate},</if>
+            <if test="repetitioncheck != null">#{repetitioncheck},</if>
+            <if test="blacklistcheck != null">#{blacklistcheck},</if>
+            <if test="bednumber != null and bednumber != ''">#{bednumber},</if>
+            <if test="wardrobe != null and wardrobe != ''">#{wardrobe},</if>
+            <if test="freecheck != null">#{freecheck},</if>
+            <if test="freedays != null">#{freedays},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="cost != null">#{cost},</if>
+            <if test="temporary != null">#{temporary},</if>
+            <if test="usearticle != null">#{usearticle},</if>
+            <if test="photo != null">#{photo},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDormLivepeople" parameterType="DormLivepeople">
+        update dorm_livepeople
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="areaNumber != null and areaNumber != ''">area_number = #{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number = #{floorNumber},</if>
+            <if test="dormFloor != null and dormFloor != ''">dorm_floor = #{dormFloor},</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number = #{roomNumber},</if>
+            <if test="checkInaddress != null and checkInaddress != ''">check_inAddress = #{checkInaddress},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="idnumber != null">idNumber = #{idnumber},</if>
+            <if test="jobnumber != null and jobnumber != ''">jobNumber = #{jobnumber},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="guyongstatus != null and guyongstatus != ''">guyongstatus = #{guyongstatus},</if>
+            <if test="outjobdate != null">outjobdate = #{outjobdate},</if>
+            <if test="retreatreason != null and retreatreason != ''">retreatreason = #{retreatreason},</if>
+            <if test="department1 != null and department1 != ''">department1 = #{department1},</if>
+            <if test="department2 != null and department2 != ''">department2 = #{department2},</if>
+            <if test="department3 != null and department3 != ''">department3 = #{department3},</if>
+            <if test="job != null and job != ''">job = #{job},</if>
+            <if test="location != null and location != ''">location = #{location},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="level != null">level = #{level},</if>
+            <if test="classes != null">classes = #{classes},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="emergencycontact != null and emergencycontact != ''">emergencyContact = #{emergencycontact},</if>
+            <if test="relationship != null and relationship != ''">relationShip = #{relationship},</if>
+            <if test="emergencyphone != null and emergencyphone != ''">emergencyPhone = #{emergencyphone},</if>
+            <if test="reason != null and reason != ''">reason = #{reason},</if>
+            <if test="livecheck != null">liveCheck = #{livecheck},</if>
+            <if test="livedate != null">liveDate = #{livedate},</if>
+            <if test="quitcheck != null">quitCheck = #{quitcheck},</if>
+            <if test="retreattype != null">retreatType = #{retreattype},</if>
+            <if test="retreatdate != null">retreatDate = #{retreatdate},</if>
+            <if test="tuneIncheck != null">tune_inCheck = #{tuneIncheck},</if>
+            <if test="tuneIndate != null">tune_inDate = #{tuneIndate},</if>
+            <if test="repetitioncheck != null">repetitionCheck = #{repetitioncheck},</if>
+            <if test="blacklistcheck != null">blacklistCheck = #{blacklistcheck},</if>
+            <if test="bednumber != null and bednumber != ''">bedNumber = #{bednumber},</if>
+            <if test="wardrobe != null and wardrobe != ''">wardrobe = #{wardrobe},</if>
+            <if test="freecheck != null">freeCheck = #{freecheck},</if>
+            <if test="freedays != null">freeDays = #{freedays},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="cost != null">cost = #{cost},</if>
+            <if test="temporary != null">temporary = #{temporary},</if>
+            <if test="usearticle != null">useArticle = #{usearticle},</if>
+            <if test="photo != null">photo = #{photo},</if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteDormLivepeopleById" parameterType="Long">
+        delete from dorm_livepeople where ID = #{id}
+    </delete>
+
+    <delete id="deleteDormLivepeopleByIds" parameterType="String">
+        delete from dorm_livepeople where ID in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

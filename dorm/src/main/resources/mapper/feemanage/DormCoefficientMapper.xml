@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.coefficient.mapper.DormCoefficientMapper">
+    
+    <resultMap type="DormCoefficient" id="DormCoefficientResult">
+        <result property="id"    column="ID"    />
+        <result property="date"    column="date"    />
+        <result property="areaNumber"    column="area_number"    />
+        <result property="floorNumber"    column="floor_number"    />
+        <result property="dormFloor"    column="dorm_floor"    />
+        <result property="publicColdwater"    column="public_coldwater"    />
+        <result property="publicHotwater"    column="public_hotwater"    />
+        <result property="hotwaterPrice"    column="hotwater_price"    />
+        <result property="publicElectric"    column="public_electric"    />
+    </resultMap>
+
+    <sql id="selectDormCoefficientVo">
+        select ID, date, area_number, floor_number, dorm_floor, public_coldwater, public_hotwater, hotwater_price, public_electric from dorm_coefficient
+    </sql>
+
+    <select id="selectDormCoefficientList" parameterType="DormCoefficient" resultMap="DormCoefficientResult">
+        <include refid="selectDormCoefficientVo"/>
+        <where>  
+            <if test="date != null "> and date = #{date}</if>
+            <if test="areaNumber != null  and areaNumber != ''"> and area_number = #{areaNumber}</if>
+            <if test="floorNumber != null  and floorNumber != ''"> and floor_number = #{floorNumber}</if>
+            <if test="dormFloor != null  and dormFloor != ''"> and dorm_floor = #{dormFloor}</if>
+            <if test="publicColdwater != null "> and public_coldwater = #{publicColdwater}</if>
+            <if test="publicHotwater != null "> and public_hotwater = #{publicHotwater}</if>
+            <if test="hotwaterPrice != null "> and hotwater_price = #{hotwaterPrice}</if>
+            <if test="publicElectric != null "> and public_electric = #{publicElectric}</if>
+        </where>
+    </select>
+    
+    <select id="selectDormCoefficientById" parameterType="Long" resultMap="DormCoefficientResult">
+        <include refid="selectDormCoefficientVo"/>
+        where ID = #{id}
+    </select>
+        
+    <insert id="insertDormCoefficient" parameterType="DormCoefficient" useGeneratedKeys="true" keyProperty="id">
+        insert into dorm_coefficient
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="date != null">date,</if>
+            <if test="areaNumber != null and areaNumber != ''">area_number,</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number,</if>
+            <if test="dormFloor != null and dormFloor != ''">dorm_floor,</if>
+            <if test="publicColdwater != null">public_coldwater,</if>
+            <if test="publicHotwater != null">public_hotwater,</if>
+            <if test="hotwaterPrice != null">hotwater_price,</if>
+            <if test="publicElectric != null">public_electric,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="date != null">#{date},</if>
+            <if test="areaNumber != null and areaNumber != ''">#{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">#{floorNumber},</if>
+            <if test="dormFloor != null and dormFloor != ''">#{dormFloor},</if>
+            <if test="publicColdwater != null">#{publicColdwater},</if>
+            <if test="publicHotwater != null">#{publicHotwater},</if>
+            <if test="hotwaterPrice != null">#{hotwaterPrice},</if>
+            <if test="publicElectric != null">#{publicElectric},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDormCoefficient" parameterType="DormCoefficient">
+        update dorm_coefficient
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="date != null">date = #{date},</if>
+            <if test="areaNumber != null and areaNumber != ''">area_number = #{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number = #{floorNumber},</if>
+            <if test="dormFloor != null and dormFloor != ''">dorm_floor = #{dormFloor},</if>
+            <if test="publicColdwater != null">public_coldwater = #{publicColdwater},</if>
+            <if test="publicHotwater != null">public_hotwater = #{publicHotwater},</if>
+            <if test="hotwaterPrice != null">hotwater_price = #{hotwaterPrice},</if>
+            <if test="publicElectric != null">public_electric = #{publicElectric},</if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+    <delete id="deleteDormCoefficientById" parameterType="Long">
+        delete from dorm_coefficient where ID = #{id}
+    </delete>
+
+    <delete id="deleteDormCoefficientByIds" parameterType="String">
+        delete from dorm_coefficient where ID in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
