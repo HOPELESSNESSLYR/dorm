@@ -10,8 +10,8 @@ import com.ruoyi.common.core.domain.BaseEntity;
 /**
  * 免扣销假记录对象 dorm_leave_off
  * 
- * @author qqq
- * @date 2022-05-03
+ * @author lyr
+ * @date 2025-06-19
  */
 public class DormLeaveOff extends BaseEntity
 {
