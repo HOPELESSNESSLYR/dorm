@@ -160,13 +160,13 @@
           <el-form-item label="房间性别" prop="roomSex">
             <el-select v-model="form.roomSex" placeholder="请选择房间性别">
               <el-option v-for="dict in dict.type.dorm_sex" :key="dict.value" :label="dict.label"
-                :value="parseInt(dict.value)"></el-option>
+                :value="dict.value"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="房间类型" prop="roomType">
             <el-select v-model="form.roomType" placeholder="请选择房间类型">
               <el-option v-for="dict in dict.type.dorm_type" :key="dict.value" :label="dict.label"
-                :value="parseInt(dict.value)">
+                :value="dict.value">
               </el-option>
             </el-select>   
             <!-- <el-input v-model="form.roomType" placeholder="请输入宿舍类型" /> -->
@@ -1586,9 +1586,6 @@ export default {
               this.$modal.msgSuccess("批量修改成功");
               this.open = false;
               this.getList();
-              // 清空选择
-              this.ids = [];
-              this.selection = [];
             });
           } else if (this.form.id != null) {
             // 单个修改
