@@ -82,7 +82,7 @@ import org.xml.sax.InputSource;
 
 /**
  * 房间信息Controller
- * 
+ *
  * @author qqq
  * @date 2022-04-13
  * @author yara
@@ -172,22 +172,20 @@ public class DormRoominforController extends BaseController
      * 批量修改房间信息
      */
     @PreAuthorize("@ss.hasPermi('dorm:roominfor:edits')")
-    @Log(title = "房间信息", businessType = BusinessType.UPDATE)
     @PutMapping("/batchUpdate")
     public AjaxResult batchUpdate(@RequestBody Map<String, Object> params) {
         // 获取ids数组并转换为Long[]
         List<Integer> idList = (List<Integer>) params.get("ids");
         Long[] ids = idList.stream()
-                          .map(Long::valueOf)
-                          .toArray(Long[]::new);
-        
+                .map(Long::valueOf)
+                .toArray(Long[]::new);
+
         DormRoominfor dormRoominfor = new DormRoominfor();
-        // 性别转换：男=1，女=0
-        String sex = (String) params.get("roomSex");
-        dormRoominfor.setRoomSex(sex != null ? ("男".equals(sex) ? 1L : 0L) : null);
+        String sex = (String)params.get("roomSex");
+        dormRoominfor.setRoomSex(sex != null ? Long.valueOf(sex) : null);
         // 房间类型直接设置字符串
         dormRoominfor.setRoomType(params.get("roomType") != null ? params.get("roomType").toString() : null);
-        
+
         return toAjax(dormRoominforService.batchUpdate(ids, dormRoominfor));
     }
 
@@ -196,7 +194,7 @@ public class DormRoominforController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('dorm:roominfor:remove')")
     @Log(title = "房间信息", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
+    @DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(dormRoominforService.deleteDormRoominforByIds(ids));
@@ -623,45 +621,45 @@ public class DormRoominforController extends BaseController
         return resultmap;
     }
     /**http 方式直接连接sap
- * @param endPointAddress  webservice发布地址
- * @param username 用户名
- * @param password 密码
- * @Author LY
- */
-public static void httpConnSap(String endPointAddress,String username,String password,String IDnumber) throws Exception {
+     * @param endPointAddress  webservice发布地址
+     * @param username 用户名
+     * @param password 密码
+     * @Author LY
+     */
+    public static void httpConnSap(String endPointAddress,String username,String password,String IDnumber) throws Exception {
 
-    // HttpClient发送SOAP请求
-    int timeout = 10000;
-    System.out.println("HttpClient 发送SOAP请求");
-    HttpClient client = new HttpClient();
-    //如果需要用户名密码验证；不需要验证登录则不需要以下4行
-    UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
-    client.getState().setCredentials(AuthScope.ANY, creds);
-    //webservice 地址
-    PostMethod postMethod = new PostMethod(endPointAddress);
-    // 设置连接超时
-    client.getHttpConnectionManager().getParams().setConnectionTimeout(timeout);
-    // 设置读取时间超时
-    client.getHttpConnectionManager().getParams().setSoTimeout(timeout);
-    // 然后把Soap请求数据添加到PostMethod中
-    StringRequestEntity requestEntity = new StringRequestEntity(getXML(IDnumber),"text/xml", "UTF-8");
+        // HttpClient发送SOAP请求
+        int timeout = 10000;
+        System.out.println("HttpClient 发送SOAP请求");
+        HttpClient client = new HttpClient();
+        //如果需要用户名密码验证；不需要验证登录则不需要以下4行
+        UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
+        client.getState().setCredentials(AuthScope.ANY, creds);
+        //webservice 地址
+        PostMethod postMethod = new PostMethod(endPointAddress);
+        // 设置连接超时
+        client.getHttpConnectionManager().getParams().setConnectionTimeout(timeout);
+        // 设置读取时间超时
+        client.getHttpConnectionManager().getParams().setSoTimeout(timeout);
+        // 然后把Soap请求数据添加到PostMethod中
+        StringRequestEntity requestEntity = new StringRequestEntity(getXML(IDnumber),"text/xml", "UTF-8");
 
-    // 设置请求头部，否则可能会报 "no SOAPAction header" 的错误
-    postMethod.setRequestHeader("SOAPAction", "");
-    // 设置请求体
-    postMethod.setRequestEntity(requestEntity);
-    int status = client.executeMethod(postMethod);
+        // 设置请求头部，否则可能会报 "no SOAPAction header" 的错误
+        postMethod.setRequestHeader("SOAPAction", "");
+        // 设置请求体
+        postMethod.setRequestEntity(requestEntity);
+        int status = client.executeMethod(postMethod);
 
-    if (status == 200) {// 成功
-        InputStream is = postMethod.getResponseBodyAsStream();
-        // 获取请求结果字符串
-        String result = IOUtils.toString(is);
-        System.out.println("请求成功！"+"\n"+"返回结果:"+result);
-    } else {
-        System.out.println("请求失败！"+"\n"+"错误代码："+status+"\n"+"返回报文:"+"\n"+postMethod.getResponseBodyAsString());
+        if (status == 200) {// 成功
+            InputStream is = postMethod.getResponseBodyAsStream();
+            // 获取请求结果字符串
+            String result = IOUtils.toString(is);
+            System.out.println("请求成功！"+"\n"+"返回结果:"+result);
+        } else {
+            System.out.println("请求失败！"+"\n"+"错误代码："+status+"\n"+"返回报文:"+"\n"+postMethod.getResponseBodyAsString());
+        }
+
     }
-
-}
     /**
      * @return 获取请求报文  这里我是直接从soapui 里面测试再把请求报文复制过来的。
      */

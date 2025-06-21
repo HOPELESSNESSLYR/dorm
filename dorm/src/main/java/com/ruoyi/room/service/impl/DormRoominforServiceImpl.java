@@ -23,12 +23,12 @@ import static com.ruoyi.framework.datasource.DynamicDataSourceContextHolder.log;
 
 /**
  * 房间信息Service业务层处理
- * 
+ *
  * @author qqq
  * @date 2022-04-13
  */
 @Service
-public class DormRoominforServiceImpl implements IDormRoominforService 
+public class DormRoominforServiceImpl implements IDormRoominforService
 {
     @Autowired
     private DormRoominforMapper dormRoominforMapper;
@@ -38,7 +38,7 @@ public class DormRoominforServiceImpl implements IDormRoominforService
     protected Validator validator;
     /**
      * 查询房间信息
-     * 
+     *
      * @param id 房间信息主键
      * @return 房间信息
      */
@@ -52,7 +52,7 @@ public class DormRoominforServiceImpl implements IDormRoominforService
 
     /**
      * 查询房间信息列表
-     * 
+     *
      * @param dormRoominfor 房间信息
      * @return 房间信息
      */
@@ -64,7 +64,7 @@ public class DormRoominforServiceImpl implements IDormRoominforService
 
     /**
      * 新增房间信息
-     * 
+     *
      * @param dormRoominfor 房间信息
      * @return 结果
      */
@@ -76,19 +76,46 @@ public class DormRoominforServiceImpl implements IDormRoominforService
 
     /**
      * 修改房间信息
-     * 
+     *
      * @param dormRoominfor 房间信息
      * @return 结果
      */
     @Override
     public int updateDormRoominfor(DormRoominfor dormRoominfor)
     {
+        // 如果房间类型发生变化，需要重新计算可住人数和剩余可住人数
+        if (dormRoominfor.getRoomType() != null && dormRoominfor.getId() != null) {
+            // 获取当前房间信息
+            DormRoominfor currentRoom = dormRoominforMapper.selectDormRoominforById(dormRoominfor.getId());
+            if (currentRoom != null) {
+                // 如果房间类型发生变化
+                if (!dormRoominfor.getRoomType().equals(currentRoom.getRoomType())) {
+                    // 根据新的房间类型设置可住人数
+                    Long liveNumber = getLiveNumberByRoomType(dormRoominfor.getRoomType());
+                    dormRoominfor.setLivenumber(liveNumber);
+
+                    // 获取当前实际人数，如果为空则设为0
+                    Long currentPeopleNumber = currentRoom.getPeoplenumber();
+                    if (currentPeopleNumber == null) {
+                        currentPeopleNumber = 0L;
+                    }
+
+                    // 计算剩余可住人数
+                    Long remainNumber = liveNumber - currentPeopleNumber;
+                    if (remainNumber < 0) {
+                        remainNumber = 0L; // 确保剩余可住人数不为负数
+                    }
+                    dormRoominfor.setRemainnumber(remainNumber);
+                }
+            }
+        }
+
         return dormRoominforMapper.updateDormRoominfor(dormRoominfor);
     }
 
     /**
      * 批量删除房间信息
-     * 
+     *
      * @param ids 需要删除的房间信息主键
      * @return 结果
      */
@@ -100,7 +127,7 @@ public class DormRoominforServiceImpl implements IDormRoominforService
 
     /**
      * 删除房间信息
-     * 
+     *
      * @param id 房间信息主键
      * @return 结果
      */
@@ -148,31 +175,83 @@ public class DormRoominforServiceImpl implements IDormRoominforService
     public DormRoominfor selectDormRoominforBymap(Map<String, String> map){return dormRoominforMapper.selectDormRoominforBymap(map);}
     /**
      * 批量修改房间信息
-     * 
+     *
      * @param ids 需要修改的房间ID数组
      * @param dormRoominfor 包含roomSex、roomType的房间信息
      * @return 更新成功的记录数
      */
     @Override
-    public int batchUpdate(Long[] ids, DormRoominfor dormRoominfor) 
+    public int batchUpdate(Long[] ids, DormRoominfor dormRoominfor)
     {
-        if (ids == null || ids.length == 0) 
+        if (ids == null || ids.length == 0)
         {
             throw new ServiceException("未选择要更新的房间");
         }
-        
-        // 创建更新对象
-        DormRoominfor updateRoom = new DormRoominfor();
-        updateRoom.setRoomSex(dormRoominfor.getRoomSex());
-        updateRoom.setRoomType(dormRoominfor.getRoomType());
-        
+
         int rows = 0;
-        for (Long id : ids) 
+        for (Long id : ids)
         {
+            // 获取当前房间信息
+            DormRoominfor currentRoom = dormRoominforMapper.selectDormRoominforById(id);
+            if (currentRoom == null) {
+                continue;
+            }
+
+            // 创建更新对象
+            DormRoominfor updateRoom = new DormRoominfor();
             updateRoom.setId(id);
+            updateRoom.setRoomSex(dormRoominfor.getRoomSex());
+            updateRoom.setRoomType(dormRoominfor.getRoomType());
+
+            // 根据房间类型设置可住人数
+            if (dormRoominfor.getRoomType() != null) {
+                Long liveNumber = getLiveNumberByRoomType(dormRoominfor.getRoomType());
+                updateRoom.setLivenumber(liveNumber);
+
+                // 获取当前实际人数，如果为空则设为0
+                Long currentPeopleNumber = currentRoom.getPeoplenumber();
+                if (currentPeopleNumber == null) {
+                    currentPeopleNumber = 0L;
+                }
+
+                // 计算剩余可住人数
+                Long remainNumber = liveNumber - currentPeopleNumber;
+                if (remainNumber < 0) {
+                    remainNumber = 0L; // 确保剩余可住人数不为负数
+                }
+                updateRoom.setRemainnumber(remainNumber);
+            }
+
             rows += dormRoominforMapper.updateDormRoominfor(updateRoom);
         }
         return rows;
+    }
+
+    /**
+     * 根据房间类型获取可住人数
+     *
+     * @param roomType 房间类型
+     * @return 可住人数
+     */
+    private Long getLiveNumberByRoomType(String roomType) {
+        if (roomType == null) {
+            return null;
+        }
+
+        switch (roomType) {
+            case "1": // 单人间
+                return 1L;
+            case "2": // 双人间
+                return 2L;
+            case "4": // 四人间
+                return 4L;
+            case "6": // 六人间
+                return 6L;
+            case "8": // 八人间
+                return 8L;
+            default:
+                return null;
+        }
     }
 
     /**
