@@ -124,7 +124,7 @@
               <router-link
                 :to="'/dormatory/dorm/DormBed/dictDormBed/index/' + item.areaNumber + ',' + item.floorNumber + ',' + item.dormFloor + ',' + item.roomNumber">
                 <p>{{ item.floorName }}{{ item.roomNumber }}</p>
-                <p>{{ item.roomType }}人间</p>
+                <p>{{item.roomSex==0?"女":男}}     {{ item.roomType }}人间</p>
                 <p>剩余床位 {{ item.remainnumber }}</p>
               </router-link>
               <el-row :gutter="24">
@@ -168,7 +168,7 @@
               <el-option v-for="dict in dict.type.dorm_type" :key="dict.value" :label="dict.label"
                 :value="dict.value">
               </el-option>
-            </el-select>   
+            </el-select>
             <!-- <el-input v-model="form.roomType" placeholder="请输入宿舍类型" /> -->
           </el-form-item>
         </template>
@@ -2013,7 +2013,7 @@ export default {
     },
     handleConfirm4() { //请假出差
       this.$refs['elForm4'].validate(valid => {
-        if (!valid)  
+        if (!valid)
         var data = this.formData4;
         data.rowid = this.rowid;
         console.log(JSON.stringify(data));
