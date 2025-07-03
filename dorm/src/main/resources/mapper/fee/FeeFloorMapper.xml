@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.feefloor.mapper.FeeFloorMapper">
+    
+    <resultMap type="FeeFloor" id="FeeFloorResult">
+        <result property="floorfeeId"    column="floorfee_id"    />
+        <result property="nian"    column="nian"    />
+        <result property="yue"    column="yue"    />
+        <result property="areaNumber"    column="area_number"    />
+        <result property="floorNumber"    column="floor_number"    />
+        <result property="floorName"    column="floor_name"    />
+        <result property="dormFloor"    column="dorm_floor"    />
+        <result property="floorHotwaterFee"    column="floor_hotwater_fee"    />
+        <result property="floorCoolwaterFee"    column="floor_coolwater_fee"    />
+        <result property="floorElectricityFee"    column="floor_electricity_fee"    />
+    </resultMap>
+
+    <sql id="selectFeeFloorVo">
+        select floorfee_id,  nian, yue, area_number, floor_number, floor_name, dorm_floor, floor_hotwater_fee, floor_coolwater_fee, floor_electricity_fee from fee_floor
+    </sql>
+
+    <select id="selectFeeFloorList" parameterType="FeeFloor" resultMap="FeeFloorResult">
+        <include refid="selectFeeFloorVo"/>
+        <where>
+            <if test="nian != null  and nian != ''"> and nian = #{nian}</if>
+            <if test="yue != null  and yue != ''"> and yue = #{yue}</if>
+            <if test="areaNumber != null  and areaNumber != ''"> and area_number = #{areaNumber}</if>
+            <if test="floorNumber != null  and floorNumber != ''"> and floor_number = #{floorNumber}</if>
+            <if test="floorName != null  and floorName != ''"> and floor_name like concat('%', #{floorName}, '%')</if>
+            <if test="dormFloor != null  and dormFloor != ''"> and dorm_floor = #{dormFloor}</if>
+            <if test="floorHotwaterFee != null "> and floor_hotwater_fee = #{floorHotwaterFee}</if>
+            <if test="floorCoolwaterFee != null "> and floor_coolwater_fee = #{floorCoolwaterFee}</if>
+            <if test="floorElectricityFee != null "> and floor_electricity_fee = #{floorElectricityFee}</if>
+        </where>
+    </select>
+    
+    <select id="selectFeeFloorByFloorfeeId" parameterType="Long" resultMap="FeeFloorResult">
+        <include refid="selectFeeFloorVo"/>
+        where floorfee_id = #{floorfeeId}
+    </select>
+        
+    <insert id="insertFeeFloor" parameterType="FeeFloor">
+        insert into fee_floor
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="floorfeeId != null">floorfee_id,</if>
+            <if test="nian != null">nian,</if>
+            <if test="yue != null">yue,</if>
+            <if test="areaNumber != null and areaNumber != ''">area_number,</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number,</if>
+            <if test="floorName != null and floorName != ''">floor_name,</if>
+            <if test="dormFloor != null and dormFloor != ''">dorm_floor,</if>
+            <if test="floorHotwaterFee != null">floor_hotwater_fee,</if>
+            <if test="floorCoolwaterFee != null">floor_coolwater_fee,</if>
+            <if test="floorElectricityFee != null">floor_electricity_fee,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="floorfeeId != null">#{floorfeeId},</if>
+            <if test="nian != null">#{nian},</if>
+            <if test="yue != null">#{yue},</if>
+            <if test="areaNumber != null and areaNumber != ''">#{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">#{floorNumber},</if>
+            <if test="floorName != null and floorName != ''">#{floorName},</if>
+            <if test="dormFloor != null and dormFloor != ''">#{dormFloor},</if>
+            <if test="floorHotwaterFee != null">#{floorHotwaterFee},</if>
+            <if test="floorCoolwaterFee != null">#{floorCoolwaterFee},</if>
+            <if test="floorElectricityFee != null">#{floorElectricityFee},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFeeFloor" parameterType="FeeFloor">
+        update fee_floor
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="nian != null">nian = #{nian},</if>
+            <if test="yue != null">yue = #{yue},</if>
+            <if test="areaNumber != null and areaNumber != ''">area_number = #{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number = #{floorNumber},</if>
+            <if test="floorName != null and floorName != ''">floor_name = #{floorName},</if>
+            <if test="dormFloor != null and dormFloor != ''">dorm_floor = #{dormFloor},</if>
+            <if test="floorHotwaterFee != null">floor_hotwater_fee = #{floorHotwaterFee},</if>
+            <if test="floorCoolwaterFee != null">floor_coolwater_fee = #{floorCoolwaterFee},</if>
+            <if test="floorElectricityFee != null">floor_electricity_fee = #{floorElectricityFee},</if>
+        </trim>
+        where floorfee_id = #{floorfeeId}
+    </update>
+
+    <delete id="deleteFeeFloorByFloorfeeId" parameterType="Long">
+        delete from fee_floor where floorfee_id = #{floorfeeId}
+    </delete>
+
+    <delete id="deleteFeeFloorByFloorfeeIds" parameterType="String">
+        delete from fee_floor where floorfee_id in 
+        <foreach item="floorfeeId" collection="array" open="(" separator="," close=")">
+            #{floorfeeId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.feeroom.mapper.FeeRoomMapper">
+    
+    <resultMap type="FeeRoom" id="FeeRoomResult">
+        <result property="roomfeeId"    column="roomfee_id"    />
+        <result property="nian"    column="nian"    />
+        <result property="yue"    column="yue"    />
+        <result property="areaNumber"    column="area_number"    />
+        <result property="floorNumber"    column="floor_number"    />
+        <result property="floorName"    column="floor_name"    />
+        <result property="dormFloor"    column="dorm_floor"    />
+        <result property="roomNumber"    column="room_number"    />
+        <result property="isPublicArea"    column="is_public_area"    />
+        <result property="hotwatersn"    column="hotwaterSn"    />
+        <result property="hotwaterTotalLastmonth"    column="hotwater_total_lastmonth"    />
+        <result property="hotwaterTotal"    column="hotwater_total"    />
+        <result property="hotwater"    column="hotwater"    />
+        <result property="hotwaterFee"    column="hotwater_fee"    />
+        <result property="coolwatersn"    column="coolwaterSn"    />
+        <result property="coolwaterTotalLastmonth"    column="coolwater_total_lastmonth"    />
+        <result property="coolwaterTotal"    column="coolwater_total"    />
+        <result property="coolwater"    column="coolwater"    />
+        <result property="coolwaterFee"    column="coolwater_fee"    />
+        <result property="electricitysn"    column="electricitySn"    />
+        <result property="electricityTotalLastmonth"    column="electricity_total_lastmonth"    />
+        <result property="electricityTotal"    column="electricity_total"    />
+        <result property="electricity"    column="electricity"    />
+        <result property="electricityFee"    column="electricity_fee"    />
+    </resultMap>
+
+    <sql id="selectFeeRoomVo">
+        select roomfee_id, nian, yue,  area_number, floor_number, floor_name, dorm_floor, room_number, is_public_area, hotwaterSn, hotwater_total_lastmonth, hotwater_total, hotwater, hotwater_fee, coolwaterSn, coolwater_total_lastmonth, coolwater_total, coolwater, coolwater_fee, electricitySn, electricity_total_lastmonth, electricity_total, electricity, electricity_fee from fee_room
+    </sql>
+
+    <select id="selectFeeRoomList" parameterType="FeeRoom" resultMap="FeeRoomResult">
+        <include refid="selectFeeRoomVo"/>
+        <where>
+            <if test="nian != null  and nian != ''"> and nian = #{nian}</if>
+            <if test="yue != null  and yue != ''"> and yue = #{yue}</if>
+            <if test="areaNumber != null  and areaNumber != ''"> and area_number = #{areaNumber}</if>
+            <if test="floorNumber != null  and floorNumber != ''"> and floor_number = #{floorNumber}</if>
+            <if test="floorName != null  and floorName != ''"> and floor_name like concat('%', #{floorName}, '%')</if>
+            <if test="dormFloor != null  and dormFloor != ''"> and dorm_floor = #{dormFloor}</if>
+            <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
+            <if test="isPublicArea != null  and isPublicArea != ''"> and is_public_area = #{isPublicArea}</if>
+            <if test="hotwatersn != null  and hotwatersn != ''"> and hotwaterSn = #{hotwatersn}</if>
+            <if test="hotwaterTotalLastmonth != null "> and hotwater_total_lastmonth = #{hotwaterTotalLastmonth}</if>
+            <if test="hotwaterTotal != null "> and hotwater_total = #{hotwaterTotal}</if>
+            <if test="hotwater != null "> and hotwater = #{hotwater}</if>
+            <if test="hotwaterFee != null "> and hotwater_fee = #{hotwaterFee}</if>
+            <if test="coolwatersn != null  and coolwatersn != ''"> and coolwaterSn = #{coolwatersn}</if>
+            <if test="coolwaterTotalLastmonth != null "> and coolwater_total_lastmonth = #{coolwaterTotalLastmonth}</if>
+            <if test="coolwaterTotal != null "> and coolwater_total = #{coolwaterTotal}</if>
+            <if test="coolwater != null "> and coolwater = #{coolwater}</if>
+            <if test="coolwaterFee != null "> and coolwater_fee = #{coolwaterFee}</if>
+            <if test="electricitysn != null  and electricitysn != ''"> and electricitySn = #{electricitysn}</if>
+            <if test="electricityTotalLastmonth != null "> and electricity_total_lastmonth = #{electricityTotalLastmonth}</if>
+            <if test="electricityTotal != null "> and electricity_total = #{electricityTotal}</if>
+            <if test="electricity != null "> and electricity = #{electricity}</if>
+            <if test="electricityFee != null "> and electricity_fee = #{electricityFee}</if>
+        </where>
+    </select>
+    
+    <select id="selectFeeRoomByRoomfeeId" parameterType="Long" resultMap="FeeRoomResult">
+        <include refid="selectFeeRoomVo"/>
+        where roomfee_id = #{roomfeeId}
+    </select>
+        
+    <insert id="insertFeeRoom" parameterType="FeeRoom">
+        insert into fee_room
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roomfeeId != null">roomfee_id,</if>
+            <if test="nian != null">nian,</if>
+            <if test="yue != null">yue,</if>
+            <if test="areaNumber != null and areaNumber != ''">area_number,</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number,</if>
+            <if test="floorName != null and floorName != ''">floor_name,</if>
+            <if test="dormFloor != null and dormFloor != ''">dorm_floor,</if>
+            <if test="roomNumber != null">room_number,</if>
+            <if test="isPublicArea != null">is_public_area,</if>
+            <if test="hotwatersn != null">hotwaterSn,</if>
+            <if test="hotwaterTotalLastmonth != null">hotwater_total_lastmonth,</if>
+            <if test="hotwaterTotal != null">hotwater_total,</if>
+            <if test="hotwater != null">hotwater,</if>
+            <if test="hotwaterFee != null">hotwater_fee,</if>
+            <if test="coolwatersn != null">coolwaterSn,</if>
+            <if test="coolwaterTotalLastmonth != null">coolwater_total_lastmonth,</if>
+            <if test="coolwaterTotal != null">coolwater_total,</if>
+            <if test="coolwater != null">coolwater,</if>
+            <if test="coolwaterFee != null">coolwater_fee,</if>
+            <if test="electricitysn != null">electricitySn,</if>
+            <if test="electricityTotalLastmonth != null">electricity_total_lastmonth,</if>
+            <if test="electricityTotal != null">electricity_total,</if>
+            <if test="electricity != null">electricity,</if>
+            <if test="electricityFee != null">electricity_fee,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roomfeeId != null">#{roomfeeId},</if>
+            <if test="nian != null">#{nian},</if>
+            <if test="yue != null">#{yue},</if>
+            <if test="areaNumber != null and areaNumber != ''">#{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">#{floorNumber},</if>
+            <if test="floorName != null and floorName != ''">#{floorName},</if>
+            <if test="dormFloor != null and dormFloor != ''">#{dormFloor},</if>
+            <if test="roomNumber != null">#{roomNumber},</if>
+            <if test="isPublicArea != null">#{isPublicArea},</if>
+            <if test="hotwatersn != null">#{hotwatersn},</if>
+            <if test="hotwaterTotalLastmonth != null">#{hotwaterTotalLastmonth},</if>
+            <if test="hotwaterTotal != null">#{hotwaterTotal},</if>
+            <if test="hotwater != null">#{hotwater},</if>
+            <if test="hotwaterFee != null">#{hotwaterFee},</if>
+            <if test="coolwatersn != null">#{coolwatersn},</if>
+            <if test="coolwaterTotalLastmonth != null">#{coolwaterTotalLastmonth},</if>
+            <if test="coolwaterTotal != null">#{coolwaterTotal},</if>
+            <if test="coolwater != null">#{coolwater},</if>
+            <if test="coolwaterFee != null">#{coolwaterFee},</if>
+            <if test="electricitysn != null">#{electricitysn},</if>
+            <if test="electricityTotalLastmonth != null">#{electricityTotalLastmonth},</if>
+            <if test="electricityTotal != null">#{electricityTotal},</if>
+            <if test="electricity != null">#{electricity},</if>
+            <if test="electricityFee != null">#{electricityFee},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFeeRoom" parameterType="FeeRoom">
+        update fee_room
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="nian != null">nian = #{nian},</if>
+            <if test="yue != null">yue = #{yue},</if>
+            <if test="areaNumber != null and areaNumber != ''">area_number = #{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number = #{floorNumber},</if>
+            <if test="floorName != null and floorName != ''">floor_name = #{floorName},</if>
+            <if test="dormFloor != null and dormFloor != ''">dorm_floor = #{dormFloor},</if>
+            <if test="roomNumber != null">room_number = #{roomNumber},</if>
+            <if test="isPublicArea != null">is_public_area = #{isPublicArea},</if>
+            <if test="hotwatersn != null">hotwaterSn = #{hotwatersn},</if>
+            <if test="hotwaterTotalLastmonth != null">hotwater_total_lastmonth = #{hotwaterTotalLastmonth},</if>
+            <if test="hotwaterTotal != null">hotwater_total = #{hotwaterTotal},</if>
+            <if test="hotwater != null">hotwater = #{hotwater},</if>
+            <if test="hotwaterFee != null">hotwater_fee = #{hotwaterFee},</if>
+            <if test="coolwatersn != null">coolwaterSn = #{coolwatersn},</if>
+            <if test="coolwaterTotalLastmonth != null">coolwater_total_lastmonth = #{coolwaterTotalLastmonth},</if>
+            <if test="coolwaterTotal != null">coolwater_total = #{coolwaterTotal},</if>
+            <if test="coolwater != null">coolwater = #{coolwater},</if>
+            <if test="coolwaterFee != null">coolwater_fee = #{coolwaterFee},</if>
+            <if test="electricitysn != null">electricitySn = #{electricitysn},</if>
+            <if test="electricityTotalLastmonth != null">electricity_total_lastmonth = #{electricityTotalLastmonth},</if>
+            <if test="electricityTotal != null">electricity_total = #{electricityTotal},</if>
+            <if test="electricity != null">electricity = #{electricity},</if>
+            <if test="electricityFee != null">electricity_fee = #{electricityFee},</if>
+        </trim>
+        where roomfee_id = #{roomfeeId}
+    </update>
+
+    <delete id="deleteFeeRoomByRoomfeeId" parameterType="Long">
+        delete from fee_room where roomfee_id = #{roomfeeId}
+    </delete>
+
+    <delete id="deleteFeeRoomByRoomfeeIds" parameterType="String">
+        delete from fee_room where roomfee_id in 
+        <foreach item="roomfeeId" collection="array" open="(" separator="," close=")">
+            #{roomfeeId}
+        </foreach>
+    </delete>
+</mapper>

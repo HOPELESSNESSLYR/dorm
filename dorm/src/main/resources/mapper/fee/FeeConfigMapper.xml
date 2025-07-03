@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.feeconfig.mapper.FeeConfigMapper">
+    
+    <resultMap type="FeeConfig" id="FeeConfigResult">
+        <result property="congifId"    column="congif_id"    />
+<!--        <result property="nianyue"    column="nianyue"    />-->
+        <result property="nian"    column="nian"    />
+        <result property="yue"    column="yue"    />
+        <result property="areaNumber"    column="area_number"    />
+        <result property="electricityPrice"    column="electricity_price"    />
+        <result property="hotwaterPrice"    column="hotwater_price"    />
+        <result property="coolwaterPrice"    column="coolwater_price"    />
+        <result property="publicElectricityPrice"    column="public_electricity_price"    />
+        <result property="publicHotwaterPrice"    column="public_hotwater_price"    />
+        <result property="publicCoolwaterPrice"    column="public_coolwater_price"    />
+        <result property="publicWashingPrice"    column="public_washing_price"    />
+    </resultMap>
+
+    <sql id="selectFeeConfigVo">
+        select congif_id, nian, yue, area_number, electricity_price, hotwater_price, coolwater_price, public_electricity_price, public_hotwater_price, public_coolwater_price, public_washing_price from fee_config
+    </sql>
+
+    <select id="selectFeeConfigList" parameterType="FeeConfig" resultMap="FeeConfigResult">
+        <include refid="selectFeeConfigVo"/>
+        <where>  
+<!--            <if test="nianyue != null "> and nianyue = #{nianyue}</if>-->
+            <if test="nian != null  and nian != ''"> and nian = #{nian}</if>
+            <if test="yue != null  and yue != ''"> and yue = #{yue}</if>
+            <if test="areaNumber != null  and areaNumber != ''"> and area_number = #{areaNumber}</if>
+            <if test="electricityPrice != null "> and electricity_price = #{electricityPrice}</if>
+            <if test="hotwaterPrice != null "> and hotwater_price = #{hotwaterPrice}</if>
+            <if test="coolwaterPrice != null "> and coolwater_price = #{coolwaterPrice}</if>
+            <if test="publicElectricityPrice != null "> and public_electricity_price = #{publicElectricityPrice}</if>
+            <if test="publicHotwaterPrice != null "> and public_hotwater_price = #{publicHotwaterPrice}</if>
+            <if test="publicCoolwaterPrice != null "> and public_coolwater_price = #{publicCoolwaterPrice}</if>
+            <if test="publicWashingPrice != null "> and public_washing_price = #{publicWashingPrice}</if>
+        </where>
+    </select>
+    
+    <select id="selectFeeConfigByCongifId" parameterType="Long" resultMap="FeeConfigResult">
+        <include refid="selectFeeConfigVo"/>
+        where congif_id = #{congifId}
+    </select>
+        
+    <insert id="insertFeeConfig" parameterType="FeeConfig">
+        insert into fee_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="congifId != null">congif_id,</if>
+            <if test="nian != null">nian,</if>
+            <if test="yue != null">yue,</if>
+            <if test="areaNumber != null and areaNumber != ''">area_number,</if>
+            <if test="electricityPrice != null">electricity_price,</if>
+            <if test="hotwaterPrice != null">hotwater_price,</if>
+            <if test="coolwaterPrice != null">coolwater_price,</if>
+            <if test="publicElectricityPrice != null">public_electricity_price,</if>
+            <if test="publicHotwaterPrice != null">public_hotwater_price,</if>
+            <if test="publicCoolwaterPrice != null">public_coolwater_price,</if>
+            <if test="publicWashingPrice != null">public_washing_price,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="congifId != null">#{congifId},</if>
+            <if test="nian != null">#{nian},</if>
+            <if test="yue != null">#{yue},</if>
+            <if test="areaNumber != null and areaNumber != ''">#{areaNumber},</if>
+            <if test="electricityPrice != null">#{electricityPrice},</if>
+            <if test="hotwaterPrice != null">#{hotwaterPrice},</if>
+            <if test="coolwaterPrice != null">#{coolwaterPrice},</if>
+            <if test="publicElectricityPrice != null">#{publicElectricityPrice},</if>
+            <if test="publicHotwaterPrice != null">#{publicHotwaterPrice},</if>
+            <if test="publicCoolwaterPrice != null">#{publicCoolwaterPrice},</if>
+            <if test="publicWashingPrice != null">#{publicWashingPrice},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFeeConfig" parameterType="FeeConfig">
+        update fee_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="nian != null">nian = #{nian},</if>
+            <if test="yue != null">yue = #{yue},</if>
+            <if test="areaNumber != null and areaNumber != ''">area_number = #{areaNumber},</if>
+            <if test="electricityPrice != null">electricity_price = #{electricityPrice},</if>
+            <if test="hotwaterPrice != null">hotwater_price = #{hotwaterPrice},</if>
+            <if test="coolwaterPrice != null">coolwater_price = #{coolwaterPrice},</if>
+            <if test="publicElectricityPrice != null">public_electricity_price = #{publicElectricityPrice},</if>
+            <if test="publicHotwaterPrice != null">public_hotwater_price = #{publicHotwaterPrice},</if>
+            <if test="publicCoolwaterPrice != null">public_coolwater_price = #{publicCoolwaterPrice},</if>
+            <if test="publicWashingPrice != null">public_washing_price = #{publicWashingPrice},</if>
+        </trim>
+        where congif_id = #{congifId}
+    </update>
+
+    <delete id="deleteFeeConfigByCongifId" parameterType="Long">
+        delete from fee_config where congif_id = #{congifId}
+    </delete>
+
+    <delete id="deleteFeeConfigByCongifIds" parameterType="String">
+        delete from fee_config where congif_id in 
+        <foreach item="congifId" collection="array" open="(" separator="," close=")">
+            #{congifId}
+        </foreach>
+    </delete>
+</mapper>

@@ -6,10 +6,12 @@ spring:
         druid:
             # 主库数据源
             master:
-                url: jdbc:mysql://10.10.10.203:3306/dormitory?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                url: jdbc:mysql://localhost:3306/dormitory?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
                 username: root
-                password: password
-#                password: root
+                password: 1234
+#                password: password
+#                url:10.10.10.203、localhost
+#                上传正式前打开定时任务：HCM信息同步、sap推送上个月
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭

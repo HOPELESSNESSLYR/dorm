@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.feeperson.mapper.FeePersonMapper">
+    
+    <resultMap type="FeePerson" id="FeePersonResult">
+        <result property="feepersonId"    column="feeperson_id"    />
+        <result property="nian"    column="nian"    />
+        <result property="yue"    column="yue"    />
+        <result property="areaNumber"    column="area_number"    />
+        <result property="floorNumber"    column="floor_number"    />
+        <result property="dormFloor"    column="dorm_floor"    />
+        <result property="roomNumber"    column="room_number"    />
+        <result property="jobnumber"    column="jobNumber"    />
+        <result property="name"    column="name"    />
+        <result property="days"    column="days"    />
+        <result property="status"    column="status"    />
+        <result property="hotwaterFee"    column="hotwater_fee"    />
+        <result property="coolwaterFee"    column="coolwater_fee"    />
+        <result property="electricityFee"    column="electricity_fee"    />
+        <result property="publicElectricity"    column="public_electricity"    />
+        <result property="publicHotwater"    column="public_hotwater"    />
+        <result property="publicCoolwater"    column="public_coolwater"    />
+    </resultMap>
+
+    <sql id="selectFeePersonVo">
+        select feeperson_id,  nian, yue, area_number, floor_number, dorm_floor, room_number, jobNumber, name, days, status, hotwater_fee, coolwater_fee, electricity_fee, public_electricity, public_hotwater, public_coolwater from fee_person
+    </sql>
+
+    <select id="selectFeePersonList" parameterType="FeePerson" resultMap="FeePersonResult">
+        <include refid="selectFeePersonVo"/>
+        <where>
+            <if test="nian != null  and nian != ''"> and nian = #{nian}</if>
+            <if test="yue != null  and yue != ''"> and yue = #{yue}</if>
+            <if test="areaNumber != null  and areaNumber != ''"> and area_number = #{areaNumber}</if>
+            <if test="floorNumber != null  and floorNumber != ''"> and floor_number = #{floorNumber}</if>
+            <if test="dormFloor != null  and dormFloor != ''"> and dorm_floor = #{dormFloor}</if>
+            <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="days != null "> and days = #{days}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="hotwaterFee != null "> and hotwater_fee = #{hotwaterFee}</if>
+            <if test="coolwaterFee != null "> and coolwater_fee = #{coolwaterFee}</if>
+            <if test="electricityFee != null "> and electricity_fee = #{electricityFee}</if>
+            <if test="publicElectricity != null "> and public_electricity = #{publicElectricity}</if>
+            <if test="publicHotwater != null "> and public_hotwater = #{publicHotwater}</if>
+            <if test="publicCoolwater != null "> and public_coolwater = #{publicCoolwater}</if>
+        </where>
+    </select>
+    
+    <select id="selectFeePersonByFeepersonId" parameterType="Long" resultMap="FeePersonResult">
+        <include refid="selectFeePersonVo"/>
+        where feeperson_id = #{feepersonId}
+    </select>
+        
+    <insert id="insertFeePerson" parameterType="FeePerson">
+        insert into fee_person
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="feepersonId != null">feeperson_id,</if>
+            <if test="nian != null">nian,</if>
+            <if test="yue != null">yue,</if>
+            <if test="areaNumber != null and areaNumber != ''">area_number,</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number,</if>
+            <if test="dormFloor != null and dormFloor != ''">dorm_floor,</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number,</if>
+            <if test="jobnumber != null">jobNumber,</if>
+            <if test="name != null">name,</if>
+            <if test="days != null">days,</if>
+            <if test="status != null">status,</if>
+            <if test="hotwaterFee != null">hotwater_fee,</if>
+            <if test="coolwaterFee != null">coolwater_fee,</if>
+            <if test="electricityFee != null">electricity_fee,</if>
+            <if test="publicElectricity != null">public_electricity,</if>
+            <if test="publicHotwater != null">public_hotwater,</if>
+            <if test="publicCoolwater != null">public_coolwater,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="feepersonId != null">#{feepersonId},</if>
+            <if test="nian != null">#{nian},</if>
+            <if test="yue != null">#{yue},</if>
+            <if test="areaNumber != null and areaNumber != ''">#{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">#{floorNumber},</if>
+            <if test="dormFloor != null and dormFloor != ''">#{dormFloor},</if>
+            <if test="roomNumber != null and roomNumber != ''">#{roomNumber},</if>
+            <if test="jobnumber != null">#{jobnumber},</if>
+            <if test="name != null">#{name},</if>
+            <if test="days != null">#{days},</if>
+            <if test="status != null">#{status},</if>
+            <if test="hotwaterFee != null">#{hotwaterFee},</if>
+            <if test="coolwaterFee != null">#{coolwaterFee},</if>
+            <if test="electricityFee != null">#{electricityFee},</if>
+            <if test="publicElectricity != null">#{publicElectricity},</if>
+            <if test="publicHotwater != null">#{publicHotwater},</if>
+            <if test="publicCoolwater != null">#{publicCoolwater},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFeePerson" parameterType="FeePerson">
+        update fee_person
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="nian != null">nian = #{nian},</if>
+            <if test="yue != null">yue = #{yue},</if>
+            <if test="areaNumber != null and areaNumber != ''">area_number = #{areaNumber},</if>
+            <if test="floorNumber != null and floorNumber != ''">floor_number = #{floorNumber},</if>
+            <if test="dormFloor != null and dormFloor != ''">dorm_floor = #{dormFloor},</if>
+            <if test="roomNumber != null and roomNumber != ''">room_number = #{roomNumber},</if>
+            <if test="jobnumber != null">jobNumber = #{jobnumber},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="days != null">days = #{days},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="hotwaterFee != null">hotwater_fee = #{hotwaterFee},</if>
+            <if test="coolwaterFee != null">coolwater_fee = #{coolwaterFee},</if>
+            <if test="electricityFee != null">electricity_fee = #{electricityFee},</if>
+            <if test="publicElectricity != null">public_electricity = #{publicElectricity},</if>
+            <if test="publicHotwater != null">public_hotwater = #{publicHotwater},</if>
+            <if test="publicCoolwater != null">public_coolwater = #{publicCoolwater},</if>
+        </trim>
+        where feeperson_id = #{feepersonId}
+    </update>
+
+    <delete id="deleteFeePersonByFeepersonId" parameterType="Long">
+        delete from fee_person where feeperson_id = #{feepersonId}
+    </delete>
+
+    <delete id="deleteFeePersonByFeepersonIds" parameterType="String">
+        delete from fee_person where feeperson_id in 
+        <foreach item="feepersonId" collection="array" open="(" separator="," close=")">
+            #{feepersonId}
+        </foreach>
+    </delete>
+</mapper>
