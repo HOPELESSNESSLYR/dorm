@@ -67,9 +67,6 @@ public class FeeConfigServiceImpl implements IFeeConfigService
     @Override
     public int insertFeeConfig(FeeConfig feeConfig)
     {
-//        Date date = new Date(String.valueOf(feeConfig.getNianyue()));
-//        log.info("{}",date);
-
         return feeConfigMapper.insertFeeConfig(feeConfig);
     }
 
@@ -124,7 +121,7 @@ public class FeeConfigServiceImpl implements IFeeConfigService
     {
         if (StringUtils.isNull(feeConfigList) || feeConfigList.size() == 0)
         {
-            throw new ServiceException("导入房间信息数据不能为空！");
+            throw new ServiceException("导入费用配置数据不能为空！");
         }
         int successNum = 0;
         int failureNum = 0;
@@ -141,7 +138,7 @@ public class FeeConfigServiceImpl implements IFeeConfigService
                     feeconfig.setCreateBy(operName);
                     this.insertFeeConfig(feeconfig);
                     successNum++;
-                    successMsg.append("<br/>" + successNum + "、区域编号 " + feeconfig.getAreaNumber() + " 导入成功");
+                    successMsg.append("<br/>" + successNum + "、区域编号 " + feeconfig.getAreaNumber()+ "、楼层 " + feeconfig.getDormFloor() + " 导入成功");
                 }
                 else if (updateSupport)
                 {
@@ -149,18 +146,18 @@ public class FeeConfigServiceImpl implements IFeeConfigService
                     feeconfig.setUpdateBy(operName);
                     this.updateFeeConfig(feeconfig);
                     successNum++;
-                    successMsg.append("<br/>" + successNum + "、区域编号 " + feeconfig.getAreaNumber() + " 更新成功");
+                    successMsg.append("<br/>" + successNum + "、区域编号 " + feeconfig.getAreaNumber()+ "、楼层 " + feeconfig.getDormFloor() + " 更新成功");
                 }
                 else
                 {
                     failureNum++;
-                    failureMsg.append("<br/>" + failureNum + "、区域编号 " + feeconfig.getAreaNumber() + " 导入失败");
+                    failureMsg.append("<br/>" + failureNum + "、区域编号 " + feeconfig.getAreaNumber()+ "、楼层 " + feeconfig.getDormFloor() + " 导入失败");
                 }
             }
             catch (Exception e)
             {
                 failureNum++;
-                String msg = "<br/>" + failureNum + "、账号 " + feeconfig.getAreaNumber() + " 导入失败：";
+                String msg = "<br/>" + failureNum + "、区域编号 " + feeconfig.getAreaNumber() + "、楼层 " + feeconfig.getDormFloor()+ " 导入失败：";
                 failureMsg.append(msg + e.getMessage());
                 log.error(msg, e);
             }

@@ -54,6 +54,16 @@ public class FeeRoom extends BaseEntity
     @Excel(name = "员工宿舍/公共区域")
     private String isPublicArea;
 
+    /** 日期段开始 */
+//    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "日期段开始")
+    private String startdate;
+
+    /** 日期段结束 */
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Excel(name = "日期段结束")
+    private String enddate;
+
     /** 热水表号 */
     @Excel(name = "热水表号")
     private String hotwatersn;
@@ -194,6 +204,24 @@ public class FeeRoom extends BaseEntity
     public String getIsPublicArea() 
     {
         return isPublicArea;
+    }
+    public void setStartdate(String startdate)
+    {
+        this.startdate = startdate;
+    }
+
+    public String getStartdate()
+    {
+        return startdate;
+    }
+    public void setEnddate(String enddate)
+    {
+        this.enddate = enddate;
+    }
+
+    public String getEnddate()
+    {
+        return enddate;
     }
     public void setHotwatersn(String hotwatersn) 
     {
@@ -343,6 +371,8 @@ public class FeeRoom extends BaseEntity
             .append("dormFloor", getDormFloor())
             .append("roomNumber", getRoomNumber())
             .append("isPublicArea", getIsPublicArea())
+                .append("startdate", getStartdate())
+                .append("enddate", getEnddate())
             .append("hotwatersn", getHotwatersn())
             .append("hotwaterTotalLastmonth", getHotwaterTotalLastmonth())
             .append("hotwaterTotal", getHotwaterTotal())

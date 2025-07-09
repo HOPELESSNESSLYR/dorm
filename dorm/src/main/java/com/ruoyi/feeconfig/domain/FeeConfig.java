@@ -38,6 +38,10 @@ public class FeeConfig extends BaseEntity
     @Excel(name = "区域编号")
     private String areaNumber;
 
+    /** 宿舍楼层号 */
+    @Excel(name = "楼层号")
+    private String dormFloor;
+
     /** 电费单价 */
     @Excel(name = "电费单价")
     private BigDecimal electricityPrice;
@@ -111,6 +115,15 @@ public void setNian(String nian)
     {
         return areaNumber;
     }
+    public void setDormFloor(String dormFloor)
+    {
+        this.dormFloor = dormFloor;
+    }
+
+    public String getDormFloor()
+    {
+        return dormFloor;
+    }
     public void setElectricityPrice(BigDecimal electricityPrice) 
     {
         this.electricityPrice = electricityPrice;
@@ -183,6 +196,7 @@ public void setNian(String nian)
                 .append("nian", getNian())
                 .append("yue", getYue())
             .append("areaNumber", getAreaNumber())
+                .append("dormFloor", getDormFloor())
             .append("electricityPrice", getElectricityPrice())
             .append("hotwaterPrice", getHotwaterPrice())
             .append("coolwaterPrice", getCoolwaterPrice())

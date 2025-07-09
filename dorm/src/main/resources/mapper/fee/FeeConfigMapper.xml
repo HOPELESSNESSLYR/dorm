@@ -10,6 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="nian"    column="nian"    />
         <result property="yue"    column="yue"    />
         <result property="areaNumber"    column="area_number"    />
+        <result property="dormFloor"    column="dorm_floor"    />
         <result property="electricityPrice"    column="electricity_price"    />
         <result property="hotwaterPrice"    column="hotwater_price"    />
         <result property="coolwaterPrice"    column="coolwater_price"    />
@@ -20,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectFeeConfigVo">
-        select congif_id, nian, yue, area_number, electricity_price, hotwater_price, coolwater_price, public_electricity_price, public_hotwater_price, public_coolwater_price, public_washing_price from fee_config
+        select congif_id, nian, yue, area_number,dorm_floor, electricity_price, hotwater_price, coolwater_price, public_electricity_price, public_hotwater_price, public_coolwater_price, public_washing_price from fee_config
     </sql>
 
     <select id="selectFeeConfigList" parameterType="FeeConfig" resultMap="FeeConfigResult">
@@ -30,6 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="nian != null  and nian != ''"> and nian = #{nian}</if>
             <if test="yue != null  and yue != ''"> and yue = #{yue}</if>
             <if test="areaNumber != null  and areaNumber != ''"> and area_number = #{areaNumber}</if>
+             <if test="dormFloor != null  and dormFloor != ''"> and dorm_floor = #{dormFloor}</if>
             <if test="electricityPrice != null "> and electricity_price = #{electricityPrice}</if>
             <if test="hotwaterPrice != null "> and hotwater_price = #{hotwaterPrice}</if>
             <if test="coolwaterPrice != null "> and coolwater_price = #{coolwaterPrice}</if>
@@ -52,6 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="nian != null">nian,</if>
             <if test="yue != null">yue,</if>
             <if test="areaNumber != null and areaNumber != ''">area_number,</if>
+            <if test="dormFloor != null and dormFloor != ''">dorm_floor,</if>
             <if test="electricityPrice != null">electricity_price,</if>
             <if test="hotwaterPrice != null">hotwater_price,</if>
             <if test="coolwaterPrice != null">coolwater_price,</if>
@@ -65,6 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="nian != null">#{nian},</if>
             <if test="yue != null">#{yue},</if>
             <if test="areaNumber != null and areaNumber != ''">#{areaNumber},</if>
+            <if test="dormFloor != null and dormFloor != ''">#{dormFloor},</if>
             <if test="electricityPrice != null">#{electricityPrice},</if>
             <if test="hotwaterPrice != null">#{hotwaterPrice},</if>
             <if test="coolwaterPrice != null">#{coolwaterPrice},</if>
@@ -81,6 +85,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="nian != null">nian = #{nian},</if>
             <if test="yue != null">yue = #{yue},</if>
             <if test="areaNumber != null and areaNumber != ''">area_number = #{areaNumber},</if>
+            <if test="dormFloor != null and dormFloor != ''">dorm_floor = #{dormFloor},</if>
             <if test="electricityPrice != null">electricity_price = #{electricityPrice},</if>
             <if test="hotwaterPrice != null">hotwater_price = #{hotwaterPrice},</if>
             <if test="coolwaterPrice != null">coolwater_price = #{coolwaterPrice},</if>

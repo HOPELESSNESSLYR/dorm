@@ -58,4 +58,6 @@ public interface IFeeFloorService
      * @return 结果
      */
     public int deleteFeeFloorByFloorfeeId(Long floorfeeId);
+
+    public String importFeeFloor(List<FeeFloor> feeConfigList, boolean updateSupport, String operName);
 }

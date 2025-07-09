@@ -87,12 +87,6 @@ public class FeeConfigController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody FeeConfig feeConfig)
     {
-//        Date date = new Date(String.valueOf(feeConfig.getNianyue()));
-//        System.out.println(date);
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
-//        System.out.println(sdf.format(date));
-//        feeConfig.setNianyue(sdf.format(date));
-//        log.info("{}",feeConfig);
         return toAjax(feeConfigService.insertFeeConfig(feeConfig));
     }
 

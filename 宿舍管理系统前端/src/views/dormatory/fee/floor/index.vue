@@ -114,6 +114,16 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
+        type="info"
+          plain
+          icon="el-icon-upload2"
+          size="mini"
+          @click="handleImport"
+          v-hasPermi="['fee:floor:import']"
+        >导入</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button
           type="warning"
           plain
           icon="el-icon-download"
@@ -134,9 +144,9 @@
       <el-table-column label="宿舍楼编号" align="center" prop="floorNumber" />
       <el-table-column label="宿舍楼名称" align="center" prop="floorName" />
       <el-table-column label="宿舍楼层号" align="center" prop="dormFloor" />
-      <el-table-column label="楼层热水费" align="center" prop="floorHotwaterFee" />
-      <el-table-column label="楼层冷水费" align="center" prop="floorCoolwaterFee" />
-      <el-table-column label="楼层电费" align="center" prop="floorElectricityFee" />
+      <el-table-column label="楼层公共热水费" align="center" prop="floorHotwaterFee" />
+      <el-table-column label="楼层公共冷水费" align="center" prop="floorCoolwaterFee" />
+      <el-table-column label="楼层公共电费" align="center" prop="floorElectricityFee" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -201,11 +211,42 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+    <!-- 用户导入对话框 -->
+    <el-dialog :title="upload.title" :visible.sync="upload.open" width="400px" append-to-body>
+      <el-upload
+        ref="upload"
+        :limit="1"
+        accept=".xlsx, .xls"
+        :headers="upload.headers"
+        :action="upload.url + '?updateSupport=' + upload.updateSupport"
+        :disabled="upload.isUploading"
+        :on-progress="handleFileUploadProgress"
+        :on-success="handleFileSuccess"
+        :auto-upload="false"
+        drag
+      >
+        <i class="el-icon-upload"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip text-center" slot="tip">
+          <div class="el-upload__tip" slot="tip">
+            <el-checkbox v-model="upload.updateSupport" /> 是否更新已经存在的数据
+          </div>
+          <span>仅允许导入xls、xlsx格式文件。</span>
+          <el-link type="primary" :underline="false" style="font-size:12px;vertical-align: baseline;" @click="importTemplate">下载模板</el-link>
+        </div>
+      </el-upload>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="submitFileForm">确 定</el-button>
+        <el-button @click="upload.open = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { listFloor, getFloor, delFloor, addFloor, updateFloor } from "@/api/fee/floor";
+import { getToken } from "@/utils/auth";
+import { listRoom, getRoom, delRoom, addRoom, updateRoom , getelec,getcool,gethot} from "@/api/fee/room";
 
 export default {
   name: "Floor",
@@ -229,6 +270,21 @@ export default {
       title: "",
       // 是否显示弹出层
       open: false,
+      // 用户导入参数
+      upload: {
+        // 是否显示弹出层（用户导入）
+        open: false,
+        // 弹出层标题（用户导入）
+        title: "",
+        // 是否禁用上传
+        isUploading: false,
+        // 是否更新已经存在的用户数据
+        updateSupport: 0,
+        // 设置上传的请求头部
+        headers: { Authorization: "Bearer " + getToken() },
+        // 上传的地址
+        url: process.env.VUE_APP_BASE_API + "/fee/floor/importData"
+      },
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -259,7 +315,34 @@ export default {
         dormFloor: [
           { required: true, message: "宿舍楼层号不能为空", trigger: "blur" }
         ],
-      }
+      },
+      tableData: {
+        nian: null,
+        yue: null,
+        areaNumber: null,
+        floorNumber: null,
+        floorName: null,
+        dormFloor: null,
+        roomNumber: null,
+        isPublicArea: null,
+        startdate: null,
+        enddate: null,
+        hotwatersn: null,
+        hotwaterTotalLastmonth: null,
+        hotwaterTotal: null,
+        hotwater: null,
+        hotwaterFee: null,
+        coolwatersn: null,
+        coolwaterTotalLastmonth: null,
+        coolwaterTotal: null,
+        coolwater: null,
+        coolwaterFee: null,
+        electricitysn: null,
+        electricityTotalLastmonth: null,
+        electricityTotal: null,
+        electricity: null,
+        electricityFee: null
+      },
     };
   },
   created() {
@@ -269,10 +352,44 @@ export default {
     /** 查询楼层费用列表 */
     getList() {
       this.loading = true;
-      listFloor(this.queryParams).then(response => {
-        this.floorList = response.rows;
-        this.total = response.total;
-        this.loading = false;
+      listFloor(this.queryParams).then(async response2 => {
+        const floorList = response2.rows;
+        // 遍历每条楼层数据
+        for (let floor of floorList) {
+          // 构造查询条件
+          const roomQuery = {
+            nian: floor.nian,
+            yue: floor.yue,
+            areaNumber: floor.areaNumber,
+            floorNumber: floor.floorNumber,
+            dormFloor: floor.dormFloor,
+            isPublicArea: "公共区域"
+          };
+          // 查询该楼层所有房间
+          const roomRes = await listRoom(roomQuery);
+          const rooms = roomRes.rows || [];
+          // 计算公共区域费用
+          let hotwaterFee = 0, coolwaterFee = 0, electricityFee = 0;
+          rooms.forEach(room => {
+            // if (room.isPublicArea == 1) {
+              hotwaterFee += Number(room.hotwaterFee) || 0;
+              coolwaterFee += Number(room.coolwaterFee) || 0;
+              electricityFee += Number(room.electricityFee) || 0;
+            // }
+          });
+          // 更新楼层费用
+          floor.floorHotwaterFee = hotwaterFee;
+          floor.floorCoolwaterFee = coolwaterFee;
+          floor.floorElectricityFee = electricityFee;
+          // 同步更新到数据库
+          await updateFloor(floor);
+        }
+        // 重新获取最新数据
+        listFloor(this.queryParams).then(response => {
+          this.floorList = response.rows;
+          this.total = response.total;
+          this.loading = false;
+        });
       });
     },
     // 取消按钮
@@ -363,6 +480,32 @@ export default {
       this.download('fee/floor/export', {
         ...this.queryParams
       }, `floor_${new Date().getTime()}.xlsx`)
+    },
+    /** 导入按钮操作 */
+    handleImport() {
+      this.upload.title = "流动导入";
+      this.upload.open = true;
+    },
+    /** 下载模板操作 */
+    importTemplate() {
+      this.download('fee/floor/importTemplate', {
+      }, `楼层费用_模板_${new Date().getTime()}.xlsx`)
+    },
+    // 文件上传中处理
+    handleFileUploadProgress(event, file, fileList) {
+      this.upload.isUploading = true;
+    },
+    // 文件上传成功处理
+    handleFileSuccess(response, file, fileList) {
+      this.upload.open = false;
+      this.upload.isUploading = false;
+      this.$refs.upload.clearFiles();
+      this.$alert("<div style='overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;'>" + response.msg + "</div>", "导入结果", { dangerouslyUseHTMLString: true });
+      this.getList();
+    },
+    // 提交上传文件
+    submitFileForm() {
+      this.$refs.upload.submit();
     }
   }
 };

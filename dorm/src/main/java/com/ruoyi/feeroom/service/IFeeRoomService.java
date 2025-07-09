@@ -58,4 +58,6 @@ public interface IFeeRoomService
      * @return 结果
      */
     public int deleteFeeRoomByRoomfeeId(Long roomfeeId);
+
+    public String importFeeRoom(List<FeeRoom> feeConfigList, boolean updateSupport, String operName);
 }

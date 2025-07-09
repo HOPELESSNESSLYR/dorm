@@ -58,4 +58,6 @@ public interface IFeePersonService
      * @return 结果
      */
     public int deleteFeePersonByFeepersonId(Long feepersonId);
+
+    public String importFeePerson(List<FeePerson> feeConfigList, boolean updateSupport, String operName);
 }

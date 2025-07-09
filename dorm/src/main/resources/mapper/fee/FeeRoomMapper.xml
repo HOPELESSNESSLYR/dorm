@@ -14,6 +14,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="dormFloor"    column="dorm_floor"    />
         <result property="roomNumber"    column="room_number"    />
         <result property="isPublicArea"    column="is_public_area"    />
+        <result property="startdate"    column="startdate"    />
+        <result property="enddate"    column="enddate"    />
         <result property="hotwatersn"    column="hotwaterSn"    />
         <result property="hotwaterTotalLastmonth"    column="hotwater_total_lastmonth"    />
         <result property="hotwaterTotal"    column="hotwater_total"    />
@@ -32,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectFeeRoomVo">
-        select roomfee_id, nian, yue,  area_number, floor_number, floor_name, dorm_floor, room_number, is_public_area, hotwaterSn, hotwater_total_lastmonth, hotwater_total, hotwater, hotwater_fee, coolwaterSn, coolwater_total_lastmonth, coolwater_total, coolwater, coolwater_fee, electricitySn, electricity_total_lastmonth, electricity_total, electricity, electricity_fee from fee_room
+        select roomfee_id, nian, yue,  area_number, floor_number, floor_name, dorm_floor, room_number, is_public_area,startdate, enddate,  hotwaterSn, hotwater_total_lastmonth, hotwater_total, hotwater, hotwater_fee, coolwaterSn, coolwater_total_lastmonth, coolwater_total, coolwater, coolwater_fee, electricitySn, electricity_total_lastmonth, electricity_total, electricity, electricity_fee from fee_room
     </sql>
 
     <select id="selectFeeRoomList" parameterType="FeeRoom" resultMap="FeeRoomResult">
@@ -46,6 +48,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dormFloor != null  and dormFloor != ''"> and dorm_floor = #{dormFloor}</if>
             <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
             <if test="isPublicArea != null  and isPublicArea != ''"> and is_public_area = #{isPublicArea}</if>
+            <if test="startdate != null "> and startdate = #{startdate}</if>
+            <if test="enddate != null "> and enddate = #{enddate}</if>
             <if test="hotwatersn != null  and hotwatersn != ''"> and hotwaterSn = #{hotwatersn}</if>
             <if test="hotwaterTotalLastmonth != null "> and hotwater_total_lastmonth = #{hotwaterTotalLastmonth}</if>
             <if test="hotwaterTotal != null "> and hotwater_total = #{hotwaterTotal}</if>
@@ -81,6 +85,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dormFloor != null and dormFloor != ''">dorm_floor,</if>
             <if test="roomNumber != null">room_number,</if>
             <if test="isPublicArea != null">is_public_area,</if>
+            <if test="startdate != null">startdate,</if>
+            <if test="enddate != null">enddate,</if>
             <if test="hotwatersn != null">hotwaterSn,</if>
             <if test="hotwaterTotalLastmonth != null">hotwater_total_lastmonth,</if>
             <if test="hotwaterTotal != null">hotwater_total,</if>
@@ -107,6 +113,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dormFloor != null and dormFloor != ''">#{dormFloor},</if>
             <if test="roomNumber != null">#{roomNumber},</if>
             <if test="isPublicArea != null">#{isPublicArea},</if>
+            <if test="startdate != null">#{startdate},</if>
+            <if test="enddate != null">#{enddate},</if>
             <if test="hotwatersn != null">#{hotwatersn},</if>
             <if test="hotwaterTotalLastmonth != null">#{hotwaterTotalLastmonth},</if>
             <if test="hotwaterTotal != null">#{hotwaterTotal},</if>
@@ -136,6 +144,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dormFloor != null and dormFloor != ''">dorm_floor = #{dormFloor},</if>
             <if test="roomNumber != null">room_number = #{roomNumber},</if>
             <if test="isPublicArea != null">is_public_area = #{isPublicArea},</if>
+            <if test="startdate != null">startdate = #{startdate},</if>
+            <if test="enddate != null">enddate = #{enddate},</if>
             <if test="hotwatersn != null">hotwaterSn = #{hotwatersn},</if>
             <if test="hotwaterTotalLastmonth != null">hotwater_total_lastmonth = #{hotwaterTotalLastmonth},</if>
             <if test="hotwaterTotal != null">hotwater_total = #{hotwaterTotal},</if>

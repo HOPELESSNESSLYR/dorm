@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.dorm;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.feeconfig.domain.FeeConfig;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,7 @@ import com.ruoyi.feefloor.domain.FeeFloor;
 import com.ruoyi.feefloor.service.IFeeFloorService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 楼层费用Controller
@@ -100,5 +103,26 @@ public class FeeFloorController extends BaseController
     public AjaxResult remove(@PathVariable Long[] floorfeeIds)
     {
         return toAjax(feeFloorService.deleteFeeFloorByFloorfeeIds(floorfeeIds));
+    }
+
+    @PostMapping("/importTemplate")
+    public void importTemplate(HttpServletResponse response)
+    {
+        ExcelUtil<FeeFloor> util = new ExcelUtil<FeeFloor>(FeeFloor.class);
+        util.importTemplateExcel(response, "楼层费用数据");
+    }
+    /**
+     * 导入费用配置
+     */
+    @Log(title = "楼层费用", businessType = BusinessType.IMPORT)
+    @PreAuthorize("@ss.hasPermi('fee:floor:import')")
+    @PostMapping("/importData")
+    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
+    {
+        ExcelUtil<FeeFloor> util = new ExcelUtil<FeeFloor>(FeeFloor.class);
+        List<FeeFloor> feeConfigList = util.importExcel(file.getInputStream());
+        String operName = getUsername();
+        String message = feeFloorService.importFeeFloor(feeConfigList, updateSupport, operName);
+        return AjaxResult.success(message);
     }
 }

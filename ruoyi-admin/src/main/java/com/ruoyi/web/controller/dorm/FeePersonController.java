@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.dorm;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.feeconfig.domain.FeeConfig;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,7 @@ import com.ruoyi.feeperson.domain.FeePerson;
 import com.ruoyi.feeperson.service.IFeePersonService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 个人费用Controller
@@ -100,5 +103,27 @@ public class FeePersonController extends BaseController
     public AjaxResult remove(@PathVariable Long[] feepersonIds)
     {
         return toAjax(feePersonService.deleteFeePersonByFeepersonIds(feepersonIds));
+    }
+
+
+    @PostMapping("/importTemplate")
+    public void importTemplate(HttpServletResponse response)
+    {
+        ExcelUtil<FeePerson> util = new ExcelUtil<FeePerson>(FeePerson.class);
+        util.importTemplateExcel(response, "个人费用数据");
+    }
+    /**
+     * 导入费用配置
+     */
+    @Log(title = "个人费用", businessType = BusinessType.IMPORT)
+    @PreAuthorize("@ss.hasPermi('fee:person:import')")
+    @PostMapping("/importData")
+    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
+    {
+        ExcelUtil<FeePerson> util = new ExcelUtil<FeePerson>(FeePerson.class);
+        List<FeePerson> feeConfigList = util.importExcel(file.getInputStream());
+        String operName = getUsername();
+        String message = feePersonService.importFeePerson(feeConfigList, updateSupport, operName);
+        return AjaxResult.success(message);
     }
 }

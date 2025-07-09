@@ -37,6 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="floorNumber != null  and floorNumber != ''"> and floor_number = #{floorNumber}</if>
             <if test="dormFloor != null  and dormFloor != ''"> and dorm_floor = #{dormFloor}</if>
             <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
+             <if test="jobnumber != null  and jobnumber != ''"> and jobNumber = #{jobnumber}</if>
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="days != null "> and days = #{days}</if>
             <if test="status != null "> and status = #{status}</if>

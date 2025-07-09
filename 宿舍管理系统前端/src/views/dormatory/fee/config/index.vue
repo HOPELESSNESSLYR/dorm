@@ -168,6 +168,7 @@
       <el-table-column label="年份" align="center" prop="nian" />
       <el-table-column label="月份" align="center" prop="yue" />
       <el-table-column label="区域编号" align="center" prop="areaNumber" />
+      <el-table-column label="楼层号" align="center" prop="dormFloor" />
       <el-table-column label="电费单价" align="center" prop="electricityPrice" />
       <el-table-column label="热水费单价" align="center" prop="hotwaterPrice" />
       <el-table-column label="冷水费单价" align="center" prop="coolwaterPrice" />
@@ -214,6 +215,9 @@
         </el-form-item>
         <el-form-item label="区域编号" prop="areaNumber">
           <el-input v-model="form.areaNumber" placeholder="请输入区域编号" />
+        </el-form-item>
+        <el-form-item label="楼层号" prop="dormFloor">
+          <el-input v-model="form.dormFloor" placeholder="请输入宿舍楼层号" />
         </el-form-item>
         <el-form-item label="电费单价" prop="electricityPrice">
           <el-input v-model="form.electricityPrice" placeholder="请输入电费单价" />
@@ -323,6 +327,7 @@ export default {
         nian: null,
         yue: null,
         areaNumber: null,
+        dormFloor:null,
         electricityPrice: null,
         hotwaterPrice: null,
         coolwaterPrice: null,
@@ -367,6 +372,7 @@ export default {
         nian: null,
         yue: null,
         areaNumber: null,
+        dormFloor:null,
         electricityPrice: null,
         hotwaterPrice: null,
         coolwaterPrice: null,

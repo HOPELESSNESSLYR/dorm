@@ -47,11 +47,13 @@ public class FeePerson extends BaseEntity
     private String roomNumber;
 
     /** 工号 */
+    @Excel(name= "工号")
     private String jobnumber;
 
     /** 姓名 */
     @Excel(name = "姓名")
     private String name;
+
 
     /** 入住天数 */
     @Excel(name = "入住天数")
