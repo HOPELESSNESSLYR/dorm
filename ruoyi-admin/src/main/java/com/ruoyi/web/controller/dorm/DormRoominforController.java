@@ -19,6 +19,7 @@ import com.ruoyi.article.domain.DormArticle;
 import com.ruoyi.article.service.IDormArticleService;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.feeperson.service.IFeePersonService;
 import com.ruoyi.livepeople.domain.DormLivepeople;
 import com.ruoyi.livepeople.service.IDormLivepeopleService;
 import com.ruoyi.off.domain.DormLeaveOff;
@@ -56,6 +57,8 @@ import com.ruoyi.room.domain.DormRoominfor;
 import com.ruoyi.room.service.IDormRoominforService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.feeperson.domain.FeePerson;
+import com.ruoyi.feeperson.service.impl.FeePersonServiceImpl;
 import org.springframework.web.multipart.MultipartFile;
 //import sun.net.www.http.HttpClient;
 //import weaver.conn.RecordSet;
@@ -82,7 +85,7 @@ import org.xml.sax.InputSource;
 
 /**
  * 房间信息Controller
- *
+ * 
  * @author qqq
  * @date 2022-04-13
  * @author yara
@@ -111,6 +114,9 @@ public class DormRoominforController extends BaseController
     private IDormLeaveOffService dormLeaveOffService;
     @Autowired
     private IDormWardrobeService dormWardrobeService;
+
+    @Autowired
+    private IFeePersonService feePersonService;
     /**
      * 查询房间信息列表
      */
@@ -177,15 +183,15 @@ public class DormRoominforController extends BaseController
         // 获取ids数组并转换为Long[]
         List<Integer> idList = (List<Integer>) params.get("ids");
         Long[] ids = idList.stream()
-                .map(Long::valueOf)
-                .toArray(Long[]::new);
-
+                          .map(Long::valueOf)
+                          .toArray(Long[]::new);
+        
         DormRoominfor dormRoominfor = new DormRoominfor();
         String sex = (String)params.get("roomSex");
         dormRoominfor.setRoomSex(sex != null ? Long.valueOf(sex) : null);
         // 房间类型直接设置字符串
         dormRoominfor.setRoomType(params.get("roomType") != null ? params.get("roomType").toString() : null);
-
+        
         return toAjax(dormRoominforService.batchUpdate(ids, dormRoominfor));
     }
 
@@ -194,7 +200,7 @@ public class DormRoominforController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('dorm:roominfor:remove')")
     @Log(title = "房间信息", businessType = BusinessType.DELETE)
-    @DeleteMapping("/{ids}")
+	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
     {
         return toAjax(dormRoominforService.deleteDormRoominforByIds(ids));
@@ -621,45 +627,45 @@ public class DormRoominforController extends BaseController
         return resultmap;
     }
     /**http 方式直接连接sap
-     * @param endPointAddress  webservice发布地址
-     * @param username 用户名
-     * @param password 密码
-     * @Author LY
-     */
-    public static void httpConnSap(String endPointAddress,String username,String password,String IDnumber) throws Exception {
+ * @param endPointAddress  webservice发布地址
+ * @param username 用户名
+ * @param password 密码
+ * @Author LY
+ */
+public static void httpConnSap(String endPointAddress,String username,String password,String IDnumber) throws Exception {
 
-        // HttpClient发送SOAP请求
-        int timeout = 10000;
-        System.out.println("HttpClient 发送SOAP请求");
-        HttpClient client = new HttpClient();
-        //如果需要用户名密码验证；不需要验证登录则不需要以下4行
-        UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
-        client.getState().setCredentials(AuthScope.ANY, creds);
-        //webservice 地址
-        PostMethod postMethod = new PostMethod(endPointAddress);
-        // 设置连接超时
-        client.getHttpConnectionManager().getParams().setConnectionTimeout(timeout);
-        // 设置读取时间超时
-        client.getHttpConnectionManager().getParams().setSoTimeout(timeout);
-        // 然后把Soap请求数据添加到PostMethod中
-        StringRequestEntity requestEntity = new StringRequestEntity(getXML(IDnumber),"text/xml", "UTF-8");
+    // HttpClient发送SOAP请求
+    int timeout = 10000;
+    System.out.println("HttpClient 发送SOAP请求");
+    HttpClient client = new HttpClient();
+    //如果需要用户名密码验证；不需要验证登录则不需要以下4行
+    UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
+    client.getState().setCredentials(AuthScope.ANY, creds);
+    //webservice 地址
+    PostMethod postMethod = new PostMethod(endPointAddress);
+    // 设置连接超时
+    client.getHttpConnectionManager().getParams().setConnectionTimeout(timeout);
+    // 设置读取时间超时
+    client.getHttpConnectionManager().getParams().setSoTimeout(timeout);
+    // 然后把Soap请求数据添加到PostMethod中
+    StringRequestEntity requestEntity = new StringRequestEntity(getXML(IDnumber),"text/xml", "UTF-8");
 
-        // 设置请求头部，否则可能会报 "no SOAPAction header" 的错误
-        postMethod.setRequestHeader("SOAPAction", "");
-        // 设置请求体
-        postMethod.setRequestEntity(requestEntity);
-        int status = client.executeMethod(postMethod);
+    // 设置请求头部，否则可能会报 "no SOAPAction header" 的错误
+    postMethod.setRequestHeader("SOAPAction", "");
+    // 设置请求体
+    postMethod.setRequestEntity(requestEntity);
+    int status = client.executeMethod(postMethod);
 
-        if (status == 200) {// 成功
-            InputStream is = postMethod.getResponseBodyAsStream();
-            // 获取请求结果字符串
-            String result = IOUtils.toString(is);
-            System.out.println("请求成功！"+"\n"+"返回结果:"+result);
-        } else {
-            System.out.println("请求失败！"+"\n"+"错误代码："+status+"\n"+"返回报文:"+"\n"+postMethod.getResponseBodyAsString());
-        }
-
+    if (status == 200) {// 成功
+        InputStream is = postMethod.getResponseBodyAsStream();
+        // 获取请求结果字符串
+        String result = IOUtils.toString(is);
+        System.out.println("请求成功！"+"\n"+"返回结果:"+result);
+    } else {
+        System.out.println("请求失败！"+"\n"+"错误代码："+status+"\n"+"返回报文:"+"\n"+postMethod.getResponseBodyAsString());
     }
+
+}
     /**
      * @return 获取请求报文  这里我是直接从soapui 里面测试再把请求报文复制过来的。
      */
@@ -1073,6 +1079,13 @@ public class DormRoominforController extends BaseController
         tunelist.setLiveddays(getdays(dormLivepeople.getLivedate(),new Date())-qingjiariqi);
         tunelist.setCurrentMonthLiveDays(currentMonthLiveDays);
         dormStayRetreatTuneService.insertDormStayRetreatTune(tunelist);
+
+//        个人费用 退宿入住状态更新
+        FeePerson feePerson = new FeePerson();
+        feePerson.setJobnumber(dormLivepeople.getJobnumber());
+        feePerson.setStatus(0L);
+        feePersonService.updateFeePerson(feePerson);
+
         String message = "退宿成功";
         return AjaxResult.success(message);
     }

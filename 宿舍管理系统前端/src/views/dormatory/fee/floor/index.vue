@@ -316,33 +316,6 @@ export default {
           { required: true, message: "宿舍楼层号不能为空", trigger: "blur" }
         ],
       },
-      tableData: {
-        nian: null,
-        yue: null,
-        areaNumber: null,
-        floorNumber: null,
-        floorName: null,
-        dormFloor: null,
-        roomNumber: null,
-        isPublicArea: null,
-        startdate: null,
-        enddate: null,
-        hotwatersn: null,
-        hotwaterTotalLastmonth: null,
-        hotwaterTotal: null,
-        hotwater: null,
-        hotwaterFee: null,
-        coolwatersn: null,
-        coolwaterTotalLastmonth: null,
-        coolwaterTotal: null,
-        coolwater: null,
-        coolwaterFee: null,
-        electricitysn: null,
-        electricityTotalLastmonth: null,
-        electricityTotal: null,
-        electricity: null,
-        electricityFee: null
-      },
     };
   },
   created() {

@@ -86,6 +86,9 @@ public class FeePerson extends BaseEntity
     /** 公共冷水费 */
     @Excel(name = "公共冷水费")
     private BigDecimal publicCoolwater;
+    /** 合计 */
+    @Excel(name = "合计")
+    private BigDecimal feetotal;
 
     public void setFeepersonId(Long feepersonId) 
     {
@@ -240,7 +243,15 @@ public class FeePerson extends BaseEntity
     {
         return publicCoolwater;
     }
+    public void setFeetotal(BigDecimal feetotal)
+    {
+        this.feetotal = feetotal;
+    }
 
+    public BigDecimal getFeetotal()
+    {
+        return feetotal;
+    }
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -261,6 +272,7 @@ public class FeePerson extends BaseEntity
             .append("publicElectricity", getPublicElectricity())
             .append("publicHotwater", getPublicHotwater())
             .append("publicCoolwater", getPublicCoolwater())
+                .append("feetotal", getFeetotal())
             .toString();
     }
 }

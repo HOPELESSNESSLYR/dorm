@@ -216,6 +216,7 @@
       <el-table-column label="公共电费" align="center" prop="publicElectricity" />
       <el-table-column label="公共热水费" align="center" prop="publicHotwater" />
       <el-table-column label="公共冷水费" align="center" prop="publicCoolwater" />
+      <el-table-column label="合计" align="center" prop="feetotal" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -299,6 +300,9 @@
         <el-form-item label="公共冷水费" prop="publicCoolwater">
           <el-input v-model="form.publicCoolwater" placeholder="请输入公共冷水费" />
         </el-form-item>
+        <el-form-item label="合计" prop="feetotal">
+          <el-input v-model="form.feetotal" placeholder="请输入合计" />
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -341,6 +345,10 @@
 <script>
 import { listPerson, getPerson, delPerson, addPerson, updatePerson } from "@/api/fee/person";
 import { getToken } from "@/utils/auth";
+import { listRoom } from "@/api/fee/room";
+import { listLivepeople } from "@/api/livepeople/livepeople";
+import { listRoominfor} from "@/api/dorm/roominfor";
+import { listFloor } from "@/api/fee/floor";
 
 export default {
   name: "Person",
@@ -398,7 +406,8 @@ export default {
         electricityFee: null,
         publicElectricity: null,
         publicHotwater: null,
-        publicCoolwater: null
+        publicCoolwater: null,
+        feetotal: null
       },
       // 表单参数
       form: {},
@@ -426,13 +435,145 @@ export default {
     /** 查询个人费用列表 */
     getList() {
       this.loading = true;
-      listPerson(this.queryParams).then(response => {
-        this.personList = response.rows;
-        this.total = response.total;
-        this.loading = false;
-      });
+      listPerson(this.queryParams).then(async response1 => {
+        // 入住天数更新
+        const personList = response1.rows;
+        for(let person of personList){
+          person.days = new Date(person.nian, person.yue, 0).getDate(); //自然天数
 
-      
+          // 查询人员入住、退宿日期
+          const livepeopleQuery = {
+            jobNumber: person.jobNumber,
+            areaNumber: person.areaNumber,
+            floorNumber: person.floorNumber,
+            dormFloor: person.dormFloor,
+            roomNumber: person.roomNumber,
+            name: person.name
+          };
+          const livepeopleRes = await listLivepeople(livepeopleQuery);
+          const livepeoples = livepeopleRes.rows || [];
+          livepeoples.forEach(livepeople => {
+            // console.log(typeof( livepeople.livedate))
+            const indate = livepeople.livedate.split("-")// 入住日期
+            if(livepeople.quitCheck == null && indate[1] == person.yue){    // 入住日期为当月
+              person.days = new Date(person.nian, person.yue, 0).getDate() - indate[2]; 
+            }else if(livepeople.quitCheck != null && livepeople.retreatdate.split("-")[1] == person.yue){     // 退宿日期为当月
+              person.days = new Date(person.nian, person.yue, 0).getDate() - livepeople.retreatdate.split("-")[2];
+            }else if(livepeople.quitCheck != null && livepeople.retreatdate.split("-")[1] != person.yue){     // 退宿日期非当月
+              
+            }else{
+              person.days = new Date(person.nian, person.yue, 0).getDate(); //自然天数
+            }
+          });
+          // await updatePerson(person); //-----------!!!
+
+          // // 查询宿舍人数
+          // const liveNumQuery = {
+          //   jobNumber: person.jobNumber,
+          //   areaNumber: person.areaNumber,
+          //   floorNumber: person.floorNumber,
+          //   dormFloor: person.dormFloor,
+          //   roomNumber: person.roomNumber
+          // };
+          // const liveNumRes = await listRoominfor(liveNumQuery);
+          // const livenum = liveNumRes.rows[0].peoplenumber;
+          // console.log(livenum)
+
+          // 查询宿舍人的总天数 
+          const personsDaysQuery = {
+            nian: person.nian,
+            yue: person.yue,
+            areaNumber: person.areaNumber,
+            personNumber: person.floorNumber,
+            dormFloor: person.dormFloor,
+            roomNumber: person.roomNumber
+          };
+          const personsDaysRes = await listPerson(personsDaysQuery);
+          const dayss = personsDaysRes.rows || [];
+          let personsdays = 0;
+          dayss.forEach(day => {
+            personsdays += day.days || 0;
+          });
+          console.log("1"+personsdays)
+          
+          // 查询楼层人的总天数 
+          const floorsDaysQuery = {
+            nian: person.nian,
+            yue: person.yue,
+            areaNumber: person.areaNumber,
+            personNumber: person.floorNumber,
+            dormFloor: person.dormFloor
+          };
+          const floorDaysRes = await listPerson(floorsDaysQuery);
+          const daysss = floorDaysRes.rows || [];
+          let floordays = 0;
+          daysss.forEach(day => {
+            floordays += day.days || 0;
+          });
+          console.log("2 floordays"+floordays)
+
+
+          // 计算费用 
+          const roomQuery = {
+            nian: person.nian,
+            yue: person.yue,
+            areaNumber: person.areaNumber,
+            personNumber: person.floorNumber,
+            dormFloor: person.dormFloor,
+            roomNumber: person.roomNumber
+          };
+          const roomRes = await listRoom(roomQuery);
+          const rooms = roomRes.rows || [];
+          let hotwaterFee = 0, coolwaterFee = 0, electricityFee = 0;
+          rooms.forEach(room => {
+              hotwaterFee = room.hotwaterFee || 0;
+              coolwaterFee = room.coolwaterFee || 0;
+              electricityFee = room.electricityFee || 0;
+          });
+          person.hotwaterFee = hotwaterFee / personsdays * person.days;
+          person.coolwaterFee = coolwaterFee / personsdays * person.days;
+          person.electricityFee = electricityFee / personsdays * person.days;
+          console.log("3"+person.electricityFee)
+
+
+          // 计算公共费用 
+          const floorQuery = {
+            nian: person.nian,
+            yue: person.yue,
+            areaNumber: person.areaNumber,
+            dormFloor: person.dormFloor,
+            floorNumber: person.floorNumber
+          };
+          const floorRes = await listFloor(floorQuery);
+          const floors = floorRes.rows || [];
+          let photwaterFee = 0, pcoolwaterFee = 0, pelectricityFee = 0;
+          floors.forEach(floor => {
+            photwaterFee = floor.floorHotwaterFee || 0;
+            pcoolwaterFee = floor.floorCoolwaterFee || 0;
+            pelectricityFee = floor.floorElectricityFee || 0;
+          });
+          person.publicHotwater = photwaterFee / floordays * person.days;
+          person.publicCoolwater = pcoolwaterFee / floordays * person.days;
+          person.publicElectricity = pelectricityFee / floordays * person.days;
+          console.log("4"+person.publicElectricity)
+
+          // 合计
+          person.feetotal = (person.publicHotwater + person.publicCoolwater + person.publicElectricity +person.hotwaterFee +person.coolwaterFee+person.electricityFee).toFixed(1)
+          console.log("5"+person.feetotal)
+
+          await updatePerson(person);
+        }
+        // 重新获取最新数据
+        listPerson(this.queryParams).then(response => {
+          this.personList = response.rows;
+          this.total = response.total;
+          this.loading = false;
+          console.log("new")
+        });
+      });
+    },
+    comFee(){
+
     },
     // 取消按钮
     cancel() {
@@ -458,7 +599,8 @@ export default {
         electricityFee: null,
         publicElectricity: null,
         publicHotwater: null,
-        publicCoolwater: null
+        publicCoolwater: null,
+        feetotal: null
       };
       this.resetForm("form");
     },
