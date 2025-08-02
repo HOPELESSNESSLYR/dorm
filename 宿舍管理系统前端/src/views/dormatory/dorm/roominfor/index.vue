@@ -168,7 +168,7 @@
               <el-option v-for="dict in dict.type.dorm_type" :key="dict.value" :label="dict.label"
                 :value="dict.value">
               </el-option>
-            </el-select>
+            </el-select>   
             <!-- <el-input v-model="form.roomType" placeholder="请输入宿舍类型" /> -->
           </el-form-item>
         </template>
@@ -272,8 +272,8 @@
                 <el-form-item label="姓名" prop="name">
                   <el-select v-model="formData.name" placeholder="请选择姓名" filterable clearable :style="{ width: '100%' }"
                     @click="getonlivepeople" @change="getonlivepeopleinfo($event)">
-                    <el-option v-for="(item, index) in nameOptions" :key="index" :label="item.label" :value="item.value"
-                      :disabled="item.disabled"></el-option>
+                    <el-option v-for="(item, index) in nameOptions" :key="index" :label="item.label" :value="item.value" :disabled="item.disabled">
+                    </el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -852,6 +852,8 @@ import {
 import { getOnlivepeople, listOnlivepeople } from "@/api/dorm/onlivepeople";
 import { getToken } from "@/utils/auth";
 import { getlistLivepeople, getLivepeople, listLivepeople } from "@/api/livepeople/livepeople";
+import { addRoom } from "@/api/fee/room";
+import { addPerson } from "@/api/fee/person";
 
 export default {
   name: "Roominfor",
@@ -1446,6 +1448,7 @@ export default {
       backgroundColor3: "blue",
       fontColor1: "white",
       selection: [],
+      rzname:null
     };
   },
   created() {
@@ -1597,9 +1600,25 @@ export default {
           } else {
             // 新增
             addRoominfor(this.form).then(response => {
-              this.$modal.msgSuccess("新增成功");
-              this.open = false;
-              this.getList();
+              // this.$modal.msgSuccess("新增成功");
+              // this.open = false;
+              // this.getList();
+
+              const addRoomfee = {
+                nian: new Date().getFullYear(),
+                yue: new Date().getMonth()+1,
+                areaNumber: this.form.areaNumber,
+                floorNumber: this.form.floorNumber,
+                floorName: this.form.floorName,
+                dormFloor: this.form.dormFloor,
+                roomNumber: this.form.roomNumber,
+                isPublicArea: "员工宿舍",
+              };
+              addRoom(addRoomfee).then(response => {
+                this.$modal.msgSuccess("新增成功");
+                this.open = false;
+                this.getList();
+              });
             });
           }
         }
@@ -1639,6 +1658,11 @@ export default {
       this.formData.areaName = row.areaName;
       this.formData.floorName = row.floorName;
       this.formData.roomNumber = row.roomNumber;
+
+      this.formData.areaNumber = row.areaNumber;
+      this.formData.floorNumber = row.floorNumber;
+      this.formData.dormFloor = row.dormFloor;
+
       this.getonlivepeople();
       this.getkongbedinfo();
     },
@@ -1878,6 +1902,9 @@ export default {
       })
     },
     handleConfirm() { //入住
+
+      console.log(this.$refs.elForm.selected)
+
       this.$refs['elForm'].validate(valid => {
         if (!valid) return
         var data = {
@@ -1891,10 +1918,28 @@ export default {
           keynumber: this.formData.keynumber,
         };
         ruzhuConfirm(data).then(response => {
-          console.log(JSON.stringify(response));
-          alert(response.msg);
+          if(response.code == "200"){
+          // alert(response.msg);
+          const foundname = this.nameOptions.find(item => item.value === data.name);
+          const addPersonfee={
+            nian: new Date().getFullYear(),
+            yue: new Date().getMonth()+1,
+            areaNumber: this.formData.areaNumber,
+            floorNumber: this.formData.floorNumber,
+            dormFloor: this.formData.dormFloor,
+            roomNumber: this.formData.roomNumber,
+            name: foundname ? foundname.label : undefined,
+            status: 1,
+            jobnumber: response.msg
+          }
+          addPerson(addPersonfee).then(response => {
+            alert(response.msg);
+          });
           this.isVisible = false;
           this.getList();
+          }else{
+            alert(response.msg);
+          }
         })
         this.close()
       })
@@ -2013,7 +2058,7 @@ export default {
     },
     handleConfirm4() { //请假出差
       this.$refs['elForm4'].validate(valid => {
-        if (!valid)
+        if (!valid)  
         var data = this.formData4;
         data.rowid = this.rowid;
         console.log(JSON.stringify(data));

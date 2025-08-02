@@ -240,6 +240,7 @@ public class DormRoominforController extends BaseController
         //这里调取HCM的接口拿到具体人员信息数据
 //        String authenticationUrl = "http://119.13.89.192:8811/sap/bc/srt/wsdl/flv_10002A101AD1/bndg_url/sap/bc/srt/rfc/sap/zhr_o_employee_informationws/800/zhr_o_employee_informationws/zhr_o_employee_informationws?sap-client=800";
         String authenticationUrl = "http://172.16.14.118:8811/sap/bc/srt/rfc/sap/zhr_o_employee_informationws/800/zhr_o_employee_informationws/zhr_o_employee_informationws";
+        String jobnumber1 = "";
         try {
             //httpConnSap(authenticationUrl,"L20891","882158",IDnumber);
             // HttpClient发送SOAP请求
@@ -270,6 +271,7 @@ public class DormRoominforController extends BaseController
                 System.out.println("请求成功！"+"\n"+"返回结果:"+result);
                 Document document = strXmlToDocument(result);
                 String jobnumber = getValueByElementName(document, "PERNR");
+                jobnumber1 = jobnumber;
                 System.out.println(jobnumber);
                 String department2 = getValueByElementName(document,"ZTWO_STEXT");
                 String department3 =getValueByElementName(document,"ZTHREE_STEXT");
@@ -313,7 +315,8 @@ public class DormRoominforController extends BaseController
                     SimpleDateFormat sdf3 = new SimpleDateFormat("dd");
                     dormLivepeople.setPhoto("/profile/upload/images/"+dormLivepeople.getName()+"_"+dormLivepeople.getIdnumber()+".bmp");
                     dormLivepeopleService.insertDormLivepeople(dormLivepeople);
-                }else{
+                }
+                else{
                     dormLivepeople.setAreaNumber(dormRoominfor.getAreaNumber());
                     dormLivepeople.setFloorNumber(dormRoominfor.getFloorNumber());
                     dormLivepeople.setDormFloor(dormRoominfor.getDormFloor().toString());
@@ -417,7 +420,8 @@ public class DormRoominforController extends BaseController
 
 
 
-                return AjaxResult.success("入住成功");
+//                return AjaxResult.success("入住成功");
+                return AjaxResult.success(jobnumber);
             } else {
                 System.out.println("请求失败！"+"\n"+"错误代码："+status+"\n"+"返回报文:"+"\n"+postMethod.getResponseBodyAsString());
                 //房间住人数量增加
@@ -454,7 +458,8 @@ public class DormRoominforController extends BaseController
                     dormLivepeople.setLivedate(new Date());
                     dormLivepeople.setBednumber(bednumber);
                     dormLivepeopleService.insertDormLivepeople(dormLivepeople);
-                }else{
+                }
+                else{
                     dormLivepeople.setAreaNumber(dormRoominfor.getAreaNumber());
                     dormLivepeople.setFloorNumber(dormRoominfor.getFloorNumber());
                     dormLivepeople.setDormFloor(dormRoominfor.getDormFloor().toString());
@@ -558,9 +563,8 @@ public class DormRoominforController extends BaseController
         } catch (Exception e) {
             System.out.println(e);
         }
-
-
-        return AjaxResult.success("入住成功");
+//        return AjaxResult.success("入住成功");
+        return AjaxResult.success(jobnumber1);
     }
     /**
      * 将字符串类型的XML 转化成Docunent文档结构

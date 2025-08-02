@@ -407,7 +407,8 @@ export default {
         publicElectricity: null,
         publicHotwater: null,
         publicCoolwater: null,
-        feetotal: null
+        feetotal: null,
+        jobNumber:null
       },
       // 表单参数
       form: {},
@@ -494,7 +495,7 @@ export default {
           dayss.forEach(day => {
             personsdays += day.days || 0;
           });
-          console.log("1"+personsdays)
+          // console.log("1"+personsdays)
           
           // 查询楼层人的总天数 
           const floorsDaysQuery = {
@@ -510,7 +511,7 @@ export default {
           daysss.forEach(day => {
             floordays += day.days || 0;
           });
-          console.log("2 floordays"+floordays)
+          // console.log("2 floordays"+floordays)
 
 
           // 计算费用 
@@ -533,7 +534,7 @@ export default {
           person.hotwaterFee = hotwaterFee / personsdays * person.days;
           person.coolwaterFee = coolwaterFee / personsdays * person.days;
           person.electricityFee = electricityFee / personsdays * person.days;
-          console.log("3"+person.electricityFee)
+          // console.log("3"+person.electricityFee)
 
 
           // 计算公共费用 
@@ -555,11 +556,13 @@ export default {
           person.publicHotwater = photwaterFee / floordays * person.days;
           person.publicCoolwater = pcoolwaterFee / floordays * person.days;
           person.publicElectricity = pelectricityFee / floordays * person.days;
-          console.log("4"+person.publicElectricity)
+          // console.log("4"+person.publicElectricity)
 
           // 合计
-          person.feetotal = (person.publicHotwater + person.publicCoolwater + person.publicElectricity +person.hotwaterFee +person.coolwaterFee+person.electricityFee).toFixed(1)
-          console.log("5"+person.feetotal)
+          if(person.feetotal!= null){
+            person.feetotal = (person.publicHotwater + person.publicCoolwater + person.publicElectricity +person.hotwaterFee +person.coolwaterFee+person.electricityFee).toFixed(1)
+          }
+          // console.log("5"+person.feetotal)
 
           await updatePerson(person);
         }
@@ -568,7 +571,7 @@ export default {
           this.personList = response.rows;
           this.total = response.total;
           this.loading = false;
-          console.log("new")
+          // console.log("new")
         });
       });
     },

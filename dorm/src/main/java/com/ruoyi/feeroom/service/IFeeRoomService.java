@@ -11,6 +11,8 @@ import com.ruoyi.feeroom.domain.FeeRoom;
  */
 public interface IFeeRoomService 
 {
+
+
     /**
      * 查询房间费用
      * 
@@ -60,4 +62,5 @@ public interface IFeeRoomService
     public int deleteFeeRoomByRoomfeeId(Long roomfeeId);
 
     public String importFeeRoom(List<FeeRoom> feeConfigList, boolean updateSupport, String operName);
+    public int batchUpdate(Long[] ids, FeeRoom feeRoom) ;
 }

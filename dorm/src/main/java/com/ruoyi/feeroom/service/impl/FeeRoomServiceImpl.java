@@ -2,11 +2,13 @@ package com.ruoyi.feeroom.service.impl;
 
 import java.util.List;
 
+import com.ruoyi.DormBed.service.IDormBedService;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanValidators;
 import com.ruoyi.feeconfig.service.impl.FeeConfigServiceImpl;
 import com.ruoyi.feefloor.domain.FeeFloor;
+import com.ruoyi.room.domain.DormRoominfor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,8 @@ public class FeeRoomServiceImpl implements IFeeRoomService
     @Autowired
     private FeeRoomMapper feeRoomMapper;
 
+    @Autowired
+    private IFeeRoomService feeRoomService;
     /**
      * 查询房间费用
      * 
@@ -162,4 +166,33 @@ public class FeeRoomServiceImpl implements IFeeRoomService
             }
             return successMsg.toString();
         }
+
+    /**
+     * 批量修改房间信息
+     * @param ids 需要修改的ID数组
+     */
+    @Override
+    public int batchUpdate(Long[] ids,FeeRoom feeRoom)
+    {
+        if (ids == null || ids.length == 0)
+        {
+            throw new ServiceException("未选择要更新的房间");
+        }
+
+        int rows = 0;
+        for (Long id : ids)
+        {
+            FeeRoom currentRoom = feeRoomMapper.selectFeeRoomByRoomfeeId(id);
+            if (currentRoom == null) {
+                continue;
+            }
+//            feeRoom.setRoomfeeId(id);
+            currentRoom.setStartdate(feeRoom.getStartdate());
+            currentRoom.setEnddate(feeRoom.getEnddate());
+
+            rows += feeRoomMapper.updateFeeRoom(currentRoom);
+        }
+        return rows;
+    }
+
 }

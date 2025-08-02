@@ -175,4 +175,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             #{roomfeeId}
         </foreach>
     </delete>
+
+    <update id="updatesFeeRoom" parameterType="FeeRoom">
+        update
+            startdate = #{startdate} ,  enddate = #{enddate}
+        from fee_room
+        where roomfee_id = #{roomfeeId}
+    </update>
 </mapper>

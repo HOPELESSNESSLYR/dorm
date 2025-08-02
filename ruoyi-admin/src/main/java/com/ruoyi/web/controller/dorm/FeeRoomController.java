@@ -1,9 +1,11 @@
 package com.ruoyi.web.controller.dorm;
 
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.feeconfig.domain.FeeConfig;
+import com.ruoyi.room.domain.DormRoominfor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -125,4 +127,25 @@ public class FeeRoomController extends BaseController
         String message = feeRoomService.importFeeRoom(feeConfigList, updateSupport, operName);
         return AjaxResult.success(message);
     }
+
+    /**
+     * 批量修改房间信息
+     */
+    @PreAuthorize("@ss.hasPermi('dorm:roominfor:edits')")
+    @PutMapping("/batchUpdate")
+    public AjaxResult batchUpdate(@RequestBody Map<String, Object> params) {
+        // 获取ids数组并转换为Long[]
+        List<Integer> idList = (List<Integer>) params.get("ids");
+        Long[] ids = idList.stream()
+                .map(Long::valueOf)
+                .toArray(Long[]::new);
+
+        FeeRoom feeRoom = new FeeRoom();
+        String startdate = (String)params.get("startdate");
+        feeRoom.setStartdate(startdate != null ? startdate : null);
+        feeRoom.setEnddate(params.get("enddate") != null ? params.get("enddate").toString() : null);
+
+        return toAjax(feeRoomService.batchUpdate(ids, feeRoom));
+    }
+
 }

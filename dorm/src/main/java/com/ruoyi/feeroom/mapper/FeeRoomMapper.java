@@ -58,4 +58,6 @@ public interface FeeRoomMapper
      * @return 结果
      */
     public int deleteFeeRoomByRoomfeeIds(Long[] roomfeeIds);
+
+    int updatesFeeRoom(FeeRoom feeRoom);
 }

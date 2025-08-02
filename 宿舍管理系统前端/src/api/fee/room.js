@@ -42,3 +42,13 @@ export function delRoom(roomfeeId) {
     method: 'delete'
   })
 }
+
+
+// 批量修改房间信息
+export function batchUpdateRoom(data) {
+  return request({
+    url: '/fee/room/batchUpdate',
+    method: 'put',
+    data: data
+  })
+}

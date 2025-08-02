@@ -246,10 +246,21 @@
           v-hasPermi="['fee:room:export']"
         >导出</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="success"
+          plain
+          icon="el-icon-edit"
+          size="mini"
+          :disabled="selection.length < 2"
+          @click="handleUpdates"
+          v-hasPermi="['fee:room:edits']"
+        >批量修改</el-button>
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="roomList" @selection-change="handleSelectionChange">
+    <el-table v-loading="loading" :data="roomList" @selection-change="handleSelectionChange"  :max-height="maxHeight">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="房间费用ID" align="center" prop="roomfeeId" />
       <el-table-column label="年份" align="center" prop="nian" />
@@ -320,6 +331,25 @@
     <!-- 添加或修改房间费用对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <template v-if="title === '批量修改房间信息'">
+          <el-form-item label="日期段开始" prop="startdate">
+            <el-date-picker clearable
+              v-model="form.startdate"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="请选择日期段开始">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item label="日期段结束" prop="enddate">
+            <el-date-picker clearable
+              v-model="form.enddate"
+              type="date"
+              value-format="yyyy-MM-dd"
+              placeholder="请选择日期段结束">
+            </el-date-picker>
+          </el-form-item>
+        </template>
+        <template v-else>
         <el-form-item label="年份" prop="nian">
           <el-input v-model="form.nian" placeholder="请输入年份" />
         </el-form-item>
@@ -412,6 +442,7 @@
         <el-form-item label="电费" prop="electricityFee">
           <el-input v-model="form.electricityFee" placeholder="请输入电费" />
         </el-form-item>
+      </template>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -452,7 +483,7 @@
 </template>
 
 <script>
-import { listRoom, getRoom, delRoom, addRoom, updateRoom , getelec,getcool,gethot} from "@/api/fee/room";
+import { listRoom, getRoom, delRoom, addRoom, updateRoom , getelec,getcool,gethot,batchUpdateRoom} from "@/api/fee/room";
 import { getToken } from "@/utils/auth";
 import { listConfig, getConfig, delConfig, addConfig, updateConfig } from "@/api/fee/config";
 
@@ -554,14 +585,72 @@ export default {
         publicCoolwaterPrice: null,
         publicWashingPrice: null
       },
+      selection: [],
+      //
+      authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImYwMTk2MWMzNzY3Yjg4MmQ5YzBkMDgyNzM3NmVmN2VjIiwiYWN0aXZpdGkiOmZhbHNlLCJzY29wZSI6WyJPUEVOQVBJIl0sImlkIjo3ODYwOTksImxhbmRsb3JkSWQiOjc4NjA5OSwiZXhwIjoxNzU1Njc2MTM2LCJqdGkiOiIwNTBhNDllMi1kMGVjLTQ3NTAtODdhNy0wM2U2MTM1MmRjZDYiLCJjbGllbnRfaWQiOiJPUEVOQVBJIn0.op3OXSr37fVr2vdxuQBcCWvQfVvIuk5nKiKbHEeLaMo",
+      // 新增用户名和密码
+      username: "13515881762",
+      password: "yangjing10118",
+      form1:{}
     };
   },
   created() {
     this.getList();
   },
   methods: {
+    getZhihuifangdongToken() {
+      return new Promise((resolve, reject) => {
+        var request = require('request');
+        var options = {
+          method: 'GET',
+          url: `https://api.zhihuifangdong.net/open/api/getToken/${this.username}/${this.password}/YE0lkOfSuf8YUSj5DNTukQ==`,
+        };
+        request(options, (error, response) => {
+          if (error) {
+            this.$modal.msgError("智慧房东token获取失败");
+            console.error('getZhihuifangdongToken request error:', error);
+            return reject(error);
+          }
+
+          console.log('getZhihuifangdongToken response body:', response.body);
+          
+          let resBody;
+          try {
+            resBody = JSON.parse(response.body);
+          } catch(e) {
+            this.$modal.msgError("解析智慧房东token响应失败");
+            console.error('Failed to parse getZhihuifangdongToken response:', e);
+            return reject("解析智慧房东token响应失败");
+          }
+
+          const isSuccess = resBody.code === 200 || resBody.code === 0 || resBody.success === true || (resBody.msg && resBody.msg.includes('成功'));
+          let token = null;
+
+          if (isSuccess) {
+            if (typeof resBody.data === 'string' && resBody.data.length > 20) { // Heuristic for token
+              token = resBody.data;
+            }else{
+              console.log("resBody.data != 'string'")
+            }
+          }
+
+          if (token) {
+            this.authorization = token;
+            // this.$modal.msgSuccess("智慧房东token已更新");
+            resolve(this.authorization);
+          } else {
+            console.error("无token", resBody);
+            // this.$modal.msgError("智慧房东token获取失败: " + (resBody.msg || resBody.message || '未知错误'));
+            reject("智慧房东token获取失败");
+          }
+        });
+      });
+    },
     getTableData(){
       return new Promise(resolve =>{
+        if (this.title === "批量修改房间信息") {
+          this.form = this.form1;
+        }
         let that=this;
         var request = require('request');
 
@@ -572,14 +661,26 @@ export default {
             method: 'GET',
             url: 'https://api.zhihuifangdong.net/open/api/meterAnalyze?' + "meterSn=" + this.form.electricitysn + "&startTime=" + this.form.startdate + "&endTime=" + this.form.enddate,
             headers: {
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImYwMTk2MWMzNzY3Yjg4MmQ5YzBkMDgyNzM3NmVmN2VjIiwiYWN0aXZpdGkiOmZhbHNlLCJzY29wZSI6WyJPUEVOQVBJIl0sImlkIjo3ODYwOTksImxhbmRsb3JkSWQiOjc4NjA5OSwiZXhwIjoxNzUyNjI2ODY4LCJqdGkiOiJjOTMxNTc2Ny00MWNjLTQ0YjQtYmNhOC1mZTg4NjM1NWVmYWEiLCJjbGllbnRfaWQiOiJPUEVOQVBJIn0.VV1ZXGE6S6dbCTxbwiYRCtx6b1wXpRjrQkWZ1ydYTAA'
-        }
+              "Authorization": this.authorization
+            }
           };
           request(options, function (error, response) {
             if (error) return rej(error);
-            that.form.electricity = Number((JSON.parse(response.body).data.meterElectricity).slice(0, -1));
-            // that.$set(that.form, "electricity", that.form.electricity);
-            // that.$forceUpdate();
+            const body = JSON.parse(response.body);
+            if (body.message === '无效token') {
+              return that.getZhihuifangdongToken()
+                .then(newAuth => {
+                  options.headers.Authorization = newAuth;
+                  return request(options, (err, resp) => {
+                    if (err) return rej(err);
+                    const newBody = JSON.parse(resp.body);
+                    that.form.electricity = Number((newBody.data.meterElectricity).slice(0, -1));
+                    res();
+                  });
+                })
+                .catch(rej);
+            }
+            that.form.electricity = Number((body.data.meterElectricity).slice(0, -1));
             res();
           });
          }else{
@@ -593,15 +694,30 @@ export default {
             method: 'get',
             url: 'https://api.zhihuifangdong.net/open/api/waterAnalyze?' + "waterSn=" + this.form.coolwatersn + "&startTime=" + this.form.startdate + "&endTime=" + this.form.enddate,
             headers: {
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImYwMTk2MWMzNzY3Yjg4MmQ5YzBkMDgyNzM3NmVmN2VjIiwiYWN0aXZpdGkiOmZhbHNlLCJzY29wZSI6WyJPUEVOQVBJIl0sImlkIjo3ODYwOTksImxhbmRsb3JkSWQiOjc4NjA5OSwiZXhwIjoxNzUyNjI2ODY4LCJqdGkiOiJjOTMxNTc2Ny00MWNjLTQ0YjQtYmNhOC1mZTg4NjM1NWVmYWEiLCJjbGllbnRfaWQiOiJPUEVOQVBJIn0.VV1ZXGE6S6dbCTxbwiYRCtx6b1wXpRjrQkWZ1ydYTAA'
-        }
+              "Authorization": this.authorization
+            }
           };
           request(options1, function (error, response) {
-            if (error) return rej(error);
-            that.form.coolwater = Number(JSON.parse(response.body).data.waterConsumption).toFixed(2);
-            // that.$set(that.form, "coolwater", that.form.coolwater);
-            // that.$forceUpdate();
-            res();
+            if(error) return rej(error);
+            const body = JSON.parse(response.body);
+            if(body.message === "无效token"){
+              return that.getZhihuifangdongToken()
+                .then(newAuth => {
+                  options1.headers.Authorization = newAuth;
+                  return request(options1, (err, resp) => {
+                    if (err) return rej(err);
+                    const newBody = JSON.parse(resp.body);
+                    that.form.coolwater = Number(newBody.data.waterConsumption).toFixed(2);
+                    res();
+                  });
+                })
+                .catch(rej);
+            }else{ 
+              if (body.data) {
+                that.form.coolwater = Number(body.data.waterConsumption).toFixed(2);
+              }
+              res();
+            }
           });
          }else{
           res()
@@ -614,14 +730,26 @@ export default {
             method: 'get',
             url: 'https://api.zhihuifangdong.net/open/api/waterAnalyze?' + "waterSn=" + this.form.hotwatersn + "&startTime=" + this.form.startdate + "&endTime=" + this.form.enddate,
             headers: {
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImYwMTk2MWMzNzY3Yjg4MmQ5YzBkMDgyNzM3NmVmN2VjIiwiYWN0aXZpdGkiOmZhbHNlLCJzY29wZSI6WyJPUEVOQVBJIl0sImlkIjo3ODYwOTksImxhbmRsb3JkSWQiOjc4NjA5OSwiZXhwIjoxNzUyNjI2ODY4LCJqdGkiOiJjOTMxNTc2Ny00MWNjLTQ0YjQtYmNhOC1mZTg4NjM1NWVmYWEiLCJjbGllbnRfaWQiOiJPUEVOQVBJIn0.VV1ZXGE6S6dbCTxbwiYRCtx6b1wXpRjrQkWZ1ydYTAA'
+              "Authorization": this.authorization
             }
           };
           request(options2, function (error, response) {
             if (error) return rej(error);
-            that.form.hotwater = Number(JSON.parse(response.body).data.waterConsumption).toFixed(2);
-            // that.$set(that.form, "hotwater", that.form.hotwater);
-            // that.$forceUpdate();
+            const body = JSON.parse(response.body);
+            if (body.message === '无效token') {
+              return that.getZhihuifangdongToken()
+                .then(newAuth => {
+                  options2.headers.Authorization = newAuth;
+                  return request(options2, (err, resp) => {
+                    if (err) return rej(err);
+                    const newBody = JSON.parse(resp.body);
+                    that.form.hotwater = Number(newBody.data.waterConsumption).toFixed(2);
+                    res();
+                  });
+                })
+                .catch(rej);
+            }
+            that.form.hotwater = Number(body.data.waterConsumption).toFixed(2);
             res();
           });
          }else{
@@ -692,6 +820,10 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
+      //底部滚动条
+      this.$nextTick=(()=>{
+          this.maxHeight=window.innerHeight-280
+        })
     },
     // 取消按钮
     cancel() {
@@ -742,6 +874,8 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
+      // this.selection.push(selection[0])
+      this.selection = selection
       this.ids = selection.map(item => item.roomfeeId)
       this.single = selection.length!==1
       this.multiple = !selection.length
@@ -762,14 +896,51 @@ export default {
         this.title = "修改房间费用";
       });
     },
+    /** 批量修改 */
+    handleUpdates() {
+      this.reset();
+      if (this.ids.length < 2) {
+        this.$modal.msgError("请至少选择两个房间进行批量修改");
+        return;
+      }
+      this.open = true;
+      this.title = "批量修改房间信息";
+      // 不需要获取单个房间信息，因为是批量修改
+      this.form = {
+        startdate: null,
+        enddate: null
+      };
+    },
     /** 提交按钮 */
     async submitForm() {
+      if (this.title === "批量修改房间信息") {
 
-          if (this.form.roomfeeId != null) {
-            // console.log("提交1");
-            
+            console.log(this.selection)
+            for(const form of this.selection) {
+              form.startdate = this.form.startdate,
+              form.enddate = this.form.enddate
+              this.form1 = form;
+              await this.getTableData();
+              await updateRoom(this.form1);
+            }
+              this.$modal.msgSuccess("修改成功");
+              this.open = false;
+              this.getList();
+              
+            // 批量修改
+            // const updateData = {
+            //   ids: this.ids,
+            //   startdate: this.form.startdate,
+            //   enddate: this.form.enddate
+            // };
+            // batchUpdateRoom(updateData).then(response => {
+            //   this.$modal.msgSuccess("批量修改成功");
+            //   this.open = false;
+            //   this.getList();
+            // });
+          } else if(this.form.roomfeeId != null && this.title != "批量修改房间信息") {
+
             await this.getTableData();
-            // console.log("提交2")
             //计算费用
             // listConfig(this.tableData).then(res => {
             //   // console.log(JSON.stringify(res.rows))
@@ -792,17 +963,14 @@ export default {
             //     }
             //   }
             // });
-
             this.form.startdate = String( this.form.startdate)
             this.form.enddate = String( this.form.enddate)
-            console.log(JSON.stringify( this.form))
-            // console.log("提交3")
+
             updateRoom(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
-            // console.log("提交4")
           } else {
             addRoom(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
