@@ -89,6 +89,9 @@ public class FeePerson extends BaseEntity
     /** 合计 */
     @Excel(name = "合计")
     private BigDecimal feetotal;
+    /** 锁定 */
+    @Excel(name = "锁定")
+    private String lockk;
 
     public void setFeepersonId(Long feepersonId) 
     {
@@ -252,6 +255,15 @@ public class FeePerson extends BaseEntity
     {
         return feetotal;
     }
+    public void setLockk(String lockk)
+{
+    this.lockk = lockk;
+}
+
+    public String getLockk()
+    {
+        return lockk;
+    }
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -273,6 +285,7 @@ public class FeePerson extends BaseEntity
             .append("publicHotwater", getPublicHotwater())
             .append("publicCoolwater", getPublicCoolwater())
                 .append("feetotal", getFeetotal())
+                .append("lockk", getLockk())
             .toString();
     }
 }

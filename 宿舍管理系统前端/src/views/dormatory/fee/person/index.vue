@@ -25,9 +25,9 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="工号" prop="jobNumber">
+      <el-form-item label="工号" prop="jobnumber">
         <el-input
-          v-model="queryParams.jobNumber"
+          v-model="queryParams.jobnumber"
           placeholder="请输入宿舍楼层号"
           clearable
           @keyup.enter.native="handleQuery"
@@ -61,6 +61,14 @@
         <el-input
           v-model="queryParams.dormFloor"
           placeholder="请输入宿舍楼层号"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="锁定" prop="lockk">
+        <el-input
+          v-model="queryParams.lockk"
+          placeholder="请输入锁定"
           clearable
           @keyup.enter.native="handleQuery"
         />
@@ -190,11 +198,21 @@
           v-hasPermi="['fee:person:export']"
         >导出</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="danger"
+          plain
+          size="mini"
+          :disabled="multiple"
+          @click="handleLock"
+        >锁定</el-button>
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="personList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="锁定" align="center" prop="lockk" />
       <el-table-column label="个人费用ID" align="center" prop="feepersonId" />
       <el-table-column label="年份" align="center" prop="nian" />
       <el-table-column label="月份" align="center" prop="yue" />
@@ -248,6 +266,9 @@
     <!-- 添加或修改个人费用对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="锁定" prop="lockk">
+          <el-input v-model="form.lockk" placeholder="请输入锁定" />
+        </el-form-item>
         <el-form-item label="年份" prop="nian">
           <el-input v-model="form.nian" placeholder="请输入年份" />
         </el-form-item>
@@ -303,6 +324,7 @@
         <el-form-item label="合计" prop="feetotal">
           <el-input v-model="form.feetotal" placeholder="请输入合计" />
         </el-form-item>
+        
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -343,7 +365,7 @@
 </template>
 
 <script>
-import { listPerson, getPerson, delPerson, addPerson, updatePerson } from "@/api/fee/person";
+import { listPerson, getPerson, delPerson, addPerson, updatePerson ,lockPerson} from "@/api/fee/person";
 import { getToken } from "@/utils/auth";
 import { listRoom } from "@/api/fee/room";
 import { listLivepeople } from "@/api/livepeople/livepeople";
@@ -408,7 +430,8 @@ export default {
         publicHotwater: null,
         publicCoolwater: null,
         feetotal: null,
-        jobNumber:null
+        jobnumber:null,
+        lockk: null
       },
       // 表单参数
       form: {},
@@ -426,7 +449,11 @@ export default {
         roomNumber: [
           { required: true, message: "宿舍房间号不能为空", trigger: "blur" }
         ],
-      }
+      },
+      retreatdate:'',
+      nianyue:'',
+      outnianyue:'',
+      tuisu:null
     };
   },
   created() {
@@ -440,8 +467,7 @@ export default {
         // 入住天数更新
         const personList = response1.rows;
         for(let person of personList){
-          person.days = new Date(person.nian, person.yue, 0).getDate(); //自然天数
-
+        if(person.lockk!="1"){
           // 查询人员入住、退宿日期
           const livepeopleQuery = {
             jobNumber: person.jobNumber,
@@ -454,31 +480,85 @@ export default {
           const livepeopleRes = await listLivepeople(livepeopleQuery);
           const livepeoples = livepeopleRes.rows || [];
           livepeoples.forEach(livepeople => {
-            // console.log(typeof( livepeople.livedate))
-            const indate = livepeople.livedate.split("-")// 入住日期
-            if(livepeople.quitCheck == null && indate[1] == person.yue){    // 入住日期为当月
+            this.tuisu = null
+            const indate = livepeople.livedate.split("-") // 入住日期
+            if(livepeople.retreatdate == null || livepeople.retreatdate == " "){
+            // if(livepeople.quitcheck != "X"){
+            // if(livepeople.retreatdate == null ){
+              this.retreatdate = "空"
+            }else{
+              this.retreatdate = "非空"
+            }
+            if(livepeople.quitcheck === "X"){
+              this.tuisu = "退宿"
+            }
+            // console.log(livepeople.livedate)
+            // console.log(livepeople.retreatdate)
+            // console.log(livepeople.quitcheck === "X",livepeople.quitcheck == "X",this.tuisu == "退宿",this.tuisu === "退宿")
+
+            if( (this.tuisu != "退宿"||this.tuisu == "退宿") &&
+            this.retreatdate == "空" && person.nian == Number(indate[0]) && person.yue == Number(indate[1])  ){// 入住日期在当月，退宿日期不在当月或为空
               person.days = new Date(person.nian, person.yue, 0).getDate() - indate[2]; 
-            }else if(livepeople.quitCheck != null && livepeople.retreatdate.split("-")[1] == person.yue){     // 退宿日期为当月
-              person.days = new Date(person.nian, person.yue, 0).getDate() - livepeople.retreatdate.split("-")[2];
-            }else if(livepeople.quitCheck != null && livepeople.retreatdate.split("-")[1] != person.yue){     // 退宿日期非当月
-              
+              // console.log("1")
+            }else if (this.tuisu != "退宿" &&
+            this.retreatdate == "非空" && person.nian == Number(indate[0]) && person.yue == Number(indate[1])  && (person.nian != Number(livepeople.retreatdate.split("-")[0]) || person.yue != Number(livepeople.retreatdate.split("-")[1])) ){
+              person.days = new Date(person.nian, person.yue, 0).getDate() - indate[2]; 
+              // console.log("1"+person.days)
+            } 
+            else if(this.tuisu == "退宿" && 
+            this.retreatdate == "非空" && 
+            person.nian == Number(indate[0]) && 
+            person.yue == Number(indate[1])  && 
+            person.nian == Number(livepeople.retreatdate.split("-")[0]) && 
+            person.yue == Number(livepeople.retreatdate.split("-")[1]) && 
+            indate[2] <= livepeople.retreatdate.split("-")[2]){    // 入住日期为当月，退宿日期在当月;入住日期在退宿日期前
+              person.days = livepeople.retreatdate.split("-")[2] - indate[2]; 
+              // console.log("2"+person.days)
+            }else if(this.tuisu != "退宿" &&
+            this.retreatdate == "非空" && person.nian == Number(indate[0]) && 
+            person.yue == Number(indate[1])  && 
+            person.nian == Number(livepeople.retreatdate.split("-")[0]) && 
+            person.yue == Number(livepeople.retreatdate.split("-")[1]) && 
+            indate[2] >= livepeople.retreatdate.split("-")[2]){    // 入住日期为当月，退宿日期在当月;入住日期在退宿日期后
+              person.days = new Date(person.nian, person.yue, 0).getDate() - livepeople.retreatdate.split("-")[2] + indate[2]; 
+              // console.log("3"+person.days)
+            }
+            else if( (this.tuisu == "退宿" &&
+            this.retreatdate == "非空" && 
+            (person.nian != Number(indate[0])|| person.yue != Number(indate[1]) ) && 
+            (person.nian != Number(livepeople.retreatdate.split("-")[0]) || person.yue != Number(livepeople.retreatdate.split("-")[1]))&& 
+            (livepeople.livedate == livepeople.retreatdate)) ||
+            
+            ( this.tuisu == "退宿" && this.retreatdate == "非空" && 
+            (person.nian != Number(indate[0])|| person.yue != Number(indate[1]) ) && 
+            (person.nian != Number(livepeople.retreatdate.split("-")[0]) || person.yue != Number(livepeople.retreatdate.split("-")[1]))&& 
+            (livepeople.livedate < livepeople.retreatdate) &&
+            (Number(livepeople.retreatdate.split("-")[0]) < person.nian || 
+              (Number(livepeople.retreatdate.split("-")[0]) === person.nian && 
+              Number(livepeople.retreatdate.split("-")[1]) < person.yue))  ) 
+            ){ 
+              person.days = 0; 
+              // console.log("0"+person.days)
+            }
+            // else if(this.tuisu != "退宿" &&
+            // this.retreatdate == "空" && 
+            // (person.nian != Number(indate[0])|| person.yue != Number(indate[1]) ) ){ //入住日期不在当月，退宿日期不在当月或为空
+            //   person.days = new Date(person.nian, person.yue, 0).getDate(); //自然天数
+            //   console.log("4"+"-1-"+person.days)
+            // }else if(this.tuisu != "退宿" &&
+            // this.retreatdate == "非空" && (person.nian != Number(indate[0])|| person.yue != Number(indate[1]) )  && (person.nian != Number(livepeople.retreatdate.split("-")[0]) || person.yue != Number(livepeople.retreatdate.split("-")[1])) &&  (livepeople.livedate > livepeople.retreatdate || livepeople.livedate == livepeople.retreatdate)){ //入住日期不在当月，退宿日期不在当月或为空
+            //   person.days = new Date(person.nian, person.yue, 0).getDate(); //自然天数
+            //   console.log("4"+person.days)
+            // }
+            else if(
+            this.retreatdate == "非空" && (person.nian != Number(indate[0])|| person.yue != Number(indate[1]) )  && (person.nian == Number(livepeople.retreatdate.split("-")[0]) && person.yue == Number(livepeople.retreatdate.split("-")[1])) ){     // 入住日期不在当月，退宿日期在当月
+              person.days = livepeople.retreatdate.split("-")[2];
+              // console.log("5"+person.days)
             }else{
               person.days = new Date(person.nian, person.yue, 0).getDate(); //自然天数
+              // console.log("自然 "+person.days)
             }
           });
-          // await updatePerson(person); //-----------!!!
-
-          // // 查询宿舍人数
-          // const liveNumQuery = {
-          //   jobNumber: person.jobNumber,
-          //   areaNumber: person.areaNumber,
-          //   floorNumber: person.floorNumber,
-          //   dormFloor: person.dormFloor,
-          //   roomNumber: person.roomNumber
-          // };
-          // const liveNumRes = await listRoominfor(liveNumQuery);
-          // const livenum = liveNumRes.rows[0].peoplenumber;
-          // console.log(livenum)
 
           // 查询宿舍人的总天数 
           const personsDaysQuery = {
@@ -495,7 +575,6 @@ export default {
           dayss.forEach(day => {
             personsdays += day.days || 0;
           });
-          // console.log("1"+personsdays)
           
           // 查询楼层人的总天数 
           const floorsDaysQuery = {
@@ -525,15 +604,27 @@ export default {
           };
           const roomRes = await listRoom(roomQuery);
           const rooms = roomRes.rows || [];
+          if(rooms == []){
+            alert("错误：找不到"+person.roomNumber+person.yue+"月"+"的房间费用！")
+          }
           let hotwaterFee = 0, coolwaterFee = 0, electricityFee = 0;
           rooms.forEach(room => {
               hotwaterFee = room.hotwaterFee || 0;
               coolwaterFee = room.coolwaterFee || 0;
               electricityFee = room.electricityFee || 0;
           });
-          person.hotwaterFee = hotwaterFee / personsdays * person.days;
-          person.coolwaterFee = coolwaterFee / personsdays * person.days;
-          person.electricityFee = electricityFee / personsdays * person.days;
+          if((personsdays || person.days) == 0){
+            person.hotwaterFee = 0 
+            person.coolwaterFee =  0
+            person.electricityFee =  0
+          }else{
+            person.hotwaterFee = hotwaterFee / personsdays * person.days;
+            person.coolwaterFee = coolwaterFee / personsdays * person.days;
+            person.electricityFee = electricityFee / personsdays * person.days;
+          }
+          // person.hotwaterFee =  Number.isFinite(hotwaterFee / personsdays * person.days) ? hotwaterFee / personsdays * person.days : 0 ;
+          // person.coolwaterFee = Number.isFinite(coolwaterFee / personsdays * person.days) ? coolwaterFee / personsdays * person.days : 0 ;
+          // person.electricityFee = Number.isFinite(electricityFee / personsdays * person.days) ? electricityFee / personsdays * person.days : 0
           // console.log("3"+person.electricityFee)
 
 
@@ -547,6 +638,9 @@ export default {
           };
           const floorRes = await listFloor(floorQuery);
           const floors = floorRes.rows || [];
+          if(floors == []){
+            alert("错误：找不到"+person.name+person.yue+"月"+"的楼层费用！")
+          }
           let photwaterFee = 0, pcoolwaterFee = 0, pelectricityFee = 0;
           floors.forEach(floor => {
             photwaterFee = floor.floorHotwaterFee || 0;
@@ -559,19 +653,28 @@ export default {
           // console.log("4"+person.publicElectricity)
 
           // 合计
-          if(person.feetotal!= null){
+          if(person.publicHotwater== null && person.publicCoolwater== null && person.publicElectricity == null && person.hotwaterFee== null && person.coolwaterFee== null && person.electricityFee== null ){
+            person.feetotal = 0;
+          }else{
             person.feetotal = (person.publicHotwater + person.publicCoolwater + person.publicElectricity +person.hotwaterFee +person.coolwaterFee+person.electricityFee).toFixed(1)
+            // Number.isFinite(person.feetotal) ? person.feetotal : 0
           }
-          // console.log("5"+person.feetotal)
+          // console.log(""+person.publicHotwater + person.publicCoolwater + person.publicElectricity )
+          // console.log("---"+person.hotwaterFee+person.coolwaterFee+person.electricityFee )
+
+          // console.log("---"+person.feetotal)
 
           await updatePerson(person);
+        }
+        if(person.feetotal == NaN){
+          alert("错误：找不到"+person.name+person.yue+"月"+"的入住信息！")
+        }
         }
         // 重新获取最新数据
         listPerson(this.queryParams).then(response => {
           this.personList = response.rows;
           this.total = response.total;
           this.loading = false;
-          // console.log("new")
         });
       });
     },
@@ -603,7 +706,8 @@ export default {
         publicElectricity: null,
         publicHotwater: null,
         publicCoolwater: null,
-        feetotal: null
+        feetotal: null,
+        lockk: null
       };
       this.resetForm("form");
     },
@@ -700,7 +804,30 @@ export default {
     // 提交上传文件
     submitFileForm() {
       this.$refs.upload.submit();
-    }
+    },
+  getCurrentDateFormatted() {
+    const now = new Date();
+    // 使用toLocaleDateString格式化日期
+    const formattedDate = now.toLocaleDateString(); // 输出格式取决于浏览器和系统设置
+    // 或者手动构建格式化的日期字符串
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // 月份是从0开始的
+    const day = String(now.getDate()).padStart(2, '0');
+    const formattedDateManual = `${year}-${month}-${day}`;
+    // console.log(formattedDateManual); // 输出例如 "2023-04-01"
+    return formattedDateManual;
+  },
+  handleLock(row) {
+      // this.reset();
+      const feepersonIds = row.feepersonId || this.ids
+      console.log(JSON.stringify( feepersonIds)+typeof(feepersonIds))
+      this.$modal.confirm('是否确认锁定个人费用编号为"' + feepersonIds + '"的数据项？').then(function() {
+        return lockPerson(feepersonIds);
+      }).then(() => {
+        this.getList();
+        this.$modal.msgSuccess("已锁定");
+      }).catch(() => {});
+    },
   }
 };
 </script>

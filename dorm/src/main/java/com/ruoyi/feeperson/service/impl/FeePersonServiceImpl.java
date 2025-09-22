@@ -7,6 +7,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.bean.BeanValidators;
 import com.ruoyi.feeconfig.service.impl.FeeConfigServiceImpl;
 import com.ruoyi.feefloor.domain.FeeFloor;
+import com.ruoyi.feeroom.domain.FeeRoom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.feeperson.mapper.FeePersonMapper;
@@ -168,5 +169,21 @@ public class FeePersonServiceImpl implements IFeePersonService
             }
             return successMsg.toString();
         }
+    @Override
+    public int lockUpdate(Long[] feepersonIds)
+    {
+        if (feepersonIds == null || feepersonIds.length == 0)
+        {
+            throw new ServiceException("未选择要更新的数据");
+        }
 
+        int rows = 0;
+        for (Long id : feepersonIds)
+        {
+            FeePerson currentPerson = feePersonMapper.selectFeePersonByFeepersonId(id);
+            currentPerson.setLockk("1");
+            rows += feePersonMapper.updateFeePerson(currentPerson);
+        }
+        return rows;
+    }
 }

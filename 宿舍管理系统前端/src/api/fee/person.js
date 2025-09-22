@@ -42,3 +42,11 @@ export function delPerson(feepersonId) {
     method: 'delete'
   })
 }
+
+export function lockPerson(data) {
+  return request({
+    url: '/fee/person/lockUpdate',
+    method: 'post',
+    data: data
+  })
+}

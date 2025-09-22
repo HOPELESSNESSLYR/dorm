@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.livepeople.mapper.DormLivepeopleMapper">
-    
+
     <resultMap type="DormLivepeople" id="DormLivepeopleResult">
         <result property="id"    column="ID"    />
         <result property="areaNumber"    column="area_number"    />
@@ -63,7 +63,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="dormFloor != null  and dormFloor != ''"> and dorm_floor = #{dormFloor}</if>
             <if test="roomNumber != null  and roomNumber != ''"> and room_number = #{roomNumber}</if>
             <if test="checkInaddress != null  and checkInaddress != ''"> and check_inAddress = #{checkInaddress}</if>
-            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="name != null  and name != ''"> and name like #{name}</if>
             <if test="idnumber != null  and idnumber != ''"> and idNumber = #{idnumber}</if>
             <if test="jobnumber != null  and jobnumber != ''"> and jobNumber = #{jobnumber}</if>
             <if test="sex != null "> and sex = #{sex}</if>
@@ -74,8 +74,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="department2 != null  and department2 != ''"> and department2 = #{department2}</if>
             <if test="department3 != null  and department3 != ''"> and department3 = #{department3}</if>
             <if test="job != null  and job != ''"> and job = #{job}</if>
-            <if test="location != null  and location != ''"> and location = #{location}</if>
-            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="location != null  and location != ''"> and location like concat('%', #{location}, '%')</if>
+            <if test="address != null  and address != ''"> and address like concat('%', #{address}, '%')</if>
             <if test="level != null  and level != ''"> and level = #{level}</if>
             <if test="classes != null  and classes != ''"> and classes = #{classes}</if>
             <if test="phone != null  and phone != ''"> and phone = #{phone}</if>

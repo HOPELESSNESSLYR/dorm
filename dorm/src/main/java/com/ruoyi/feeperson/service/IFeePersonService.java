@@ -2,6 +2,7 @@ package com.ruoyi.feeperson.service;
 
 import java.util.List;
 import com.ruoyi.feeperson.domain.FeePerson;
+import com.ruoyi.feeroom.domain.FeeRoom;
 
 /**
  * 个人费用Service接口
@@ -60,4 +61,5 @@ public interface IFeePersonService
     public int deleteFeePersonByFeepersonId(Long feepersonId);
 
     public String importFeePerson(List<FeePerson> feeConfigList, boolean updateSupport, String operName);
+    public int lockUpdate(Long[] feepersonIds) ;
 }

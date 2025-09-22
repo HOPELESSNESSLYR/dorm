@@ -246,7 +246,8 @@
 <script>
 import { listFloor, getFloor, delFloor, addFloor, updateFloor } from "@/api/fee/floor";
 import { getToken } from "@/utils/auth";
-import { listRoom, getRoom, delRoom, addRoom, updateRoom , getelec,getcool,gethot} from "@/api/fee/room";
+import { listRoom } from "@/api/fee/room";
+import { listConfig } from "@/api/fee/config";
 
 export default {
   name: "Floor",
@@ -354,6 +355,21 @@ export default {
           floor.floorHotwaterFee = hotwaterFee;
           floor.floorCoolwaterFee = coolwaterFee;
           floor.floorElectricityFee = electricityFee;
+
+          // 楼层冷水费-洗衣机费用
+          if(floor.dormFloor != '1400'){
+            const configQuery = {
+              nian: floor.nian,
+              yue: floor.yue,
+              areaNumber: floor.areaNumber
+            };
+            const configRes = await listConfig(configQuery);
+            const configs = configRes.rows || [];
+            configs.forEach(config =>{
+              floor.floorCoolwaterFee -= config.publicWashingPrice || 0;
+            })
+          }
+  
           // 同步更新到数据库
           await updateFloor(floor);
         }

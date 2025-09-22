@@ -23,10 +23,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="publicHotwater"    column="public_hotwater"    />
         <result property="publicCoolwater"    column="public_coolwater"    />
         <result property="feetotal"    column="feetotal"    />
+        <result property="lockk"    column="lockk"    />
     </resultMap>
 
     <sql id="selectFeePersonVo">
-        select feeperson_id,  nian, yue, area_number, floor_number, dorm_floor, room_number, jobNumber, name, days, status, hotwater_fee, coolwater_fee, electricity_fee, public_electricity, public_hotwater, public_coolwater, feetotal  from fee_person
+        select feeperson_id,  nian, yue, area_number, floor_number, dorm_floor, room_number, jobNumber, name, days, status, hotwater_fee, coolwater_fee, electricity_fee, public_electricity, public_hotwater, public_coolwater, feetotal, lockk from fee_person
     </sql>
 
     <select id="selectFeePersonList" parameterType="FeePerson" resultMap="FeePersonResult">
@@ -49,6 +50,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="publicHotwater != null "> and public_hotwater = #{publicHotwater}</if>
             <if test="publicCoolwater != null "> and public_coolwater = #{publicCoolwater}</if>
             <if test="feetotal != null "> and feetotal = #{feetotal}</if>
+            <if test="lockk != null "> and lockk = #{lockk}</if>
         </where>
     </select>
     
@@ -78,7 +80,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="publicHotwater != null">public_hotwater,</if>
             <if test="publicCoolwater != null">public_coolwater,</if>
             <if test="feetotal != null">feetotal,</if>
-         </trim>
+            <if test="lockk != null">lockk,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="feepersonId != null">#{feepersonId},</if>
             <if test="nian != null">#{nian},</if>
@@ -98,7 +101,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="publicHotwater != null">#{publicHotwater},</if>
             <if test="publicCoolwater != null">#{publicCoolwater},</if>
             <if test="feetotal != null">#{feetotal},</if>
-         </trim>
+            <if test="lockk != null">lockk = #{lockk},</if>
+        </trim>
     </insert>
 
     <update id="updateFeePerson" parameterType="FeePerson">
@@ -121,6 +125,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="publicHotwater != null">public_hotwater = #{publicHotwater},</if>
             <if test="publicCoolwater != null">public_coolwater = #{publicCoolwater},</if>
             <if test="feetotal != null">feetotal = #{feetotal},</if>
+            <if test="lockk != null">lockk = #{lockk},</if>
         </trim>
         where feeperson_id = #{feepersonId}
     </update>

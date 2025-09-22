@@ -257,6 +257,17 @@
           v-hasPermi="['fee:room:edits']"
         >批量修改</el-button>
       </el-col>
+      <el-col :span="1.5">
+        <el-button
+          type="success"
+          plain
+          icon="el-icon-edit"
+          size="mini"
+          :disabled="selection.length < 2"
+          @click="handleUpdates2"
+          v-hasPermi="['fee:room:edits2']"
+        >批量计算</el-button>
+      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -286,18 +297,18 @@
         </template>
       </el-table-column>
       <el-table-column label="热水表号" align="center" prop="hotwatersn" />
-      <!-- <el-table-column label="热水上月表底" align="center" prop="hotwaterTotalLastmonth" />
-      <el-table-column label="热水本月表底" align="center" prop="hotwaterTotal" /> -->
+      <el-table-column label="热水上月表底" align="center" prop="hotwaterTotalLastmonth" />
+      <el-table-column label="热水本月表底" align="center" prop="hotwaterTotal" />
       <el-table-column label="热水用水" align="center" prop="hotwater" />
       <el-table-column label="热水费" align="center" prop="hotwaterFee" />
       <el-table-column label="冷水表号" align="center" prop="coolwatersn" />
-      <!-- <el-table-column label="冷水上月表底" align="center" prop="coolwaterTotalLastmonth" />
-      <el-table-column label="冷水本月表底" align="center" prop="coolwaterTotal" /> -->
+      <el-table-column label="冷水上月表底" align="center" prop="coolwaterTotalLastmonth" />
+      <el-table-column label="冷水本月表底" align="center" prop="coolwaterTotal" />
       <el-table-column label="冷水用水" align="center" prop="coolwater" />
       <el-table-column label="冷水费" align="center" prop="coolwaterFee" />
       <el-table-column label="电表号" align="center" prop="electricitysn" />
-      <!-- <el-table-column label="电表上月表底" align="center" prop="electricityTotalLastmonth" />
-      <el-table-column label="电表本月表底" align="center" prop="electricityTotal" /> -->
+      <el-table-column label="电表上月表底" align="center" prop="electricityTotalLastmonth" />
+      <el-table-column label="电表本月表底" align="center" prop="electricityTotal" />
       <el-table-column label="电表用量" align="center" prop="electricity" />
       <el-table-column label="电费" align="center" prop="electricityFee" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -400,12 +411,12 @@
         <el-form-item label="热水表号" prop="hotwatersn">
           <el-input v-model="form.hotwatersn" placeholder="请输入热水表号" />
         </el-form-item>
-        <!-- <el-form-item label="热水上月表底" prop="hotwaterTotalLastmonth">
+        <el-form-item label="热水上月表底" prop="hotwaterTotalLastmonth">
           <el-input v-model="form.hotwaterTotalLastmonth" placeholder="请输入热水上月表底" />
         </el-form-item>
         <el-form-item label="热水本月表底" prop="hotwaterTotal">
           <el-input v-model="form.hotwaterTotal" placeholder="请输入热水本月表底" />
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item label="热水用水" prop="hotwater">
           <el-input v-model="form.hotwater" placeholder="请输入热水用水" />
         </el-form-item>
@@ -415,12 +426,12 @@
         <el-form-item label="冷水表号" prop="coolwatersn">
           <el-input v-model="form.coolwatersn" placeholder="请输入冷水表号" />
         </el-form-item>
-        <!-- <el-form-item label="冷水上月表底" prop="coolwaterTotalLastmonth">
+        <el-form-item label="冷水上月表底" prop="coolwaterTotalLastmonth">
           <el-input v-model="form.coolwaterTotalLastmonth" placeholder="请输入冷水上月表底" />
         </el-form-item>
         <el-form-item label="冷水本月表底" prop="coolwaterTotal">
           <el-input v-model="form.coolwaterTotal" placeholder="请输入冷水本月表底" />
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item label="冷水用水" prop="coolwater">
           <el-input v-model="form.coolwater" placeholder="请输入冷水用水" />
         </el-form-item>
@@ -430,12 +441,12 @@
         <el-form-item label="电表号" prop="electricitysn">
           <el-input v-model="form.electricitysn" placeholder="请输入电表号" />
         </el-form-item>
-        <!-- <el-form-item label="电表上月表底" prop="electricityTotalLastmonth">
+        <el-form-item label="电表上月表底" prop="electricityTotalLastmonth">
           <el-input v-model="form.electricityTotalLastmonth" placeholder="请输入电表上月表底" />
         </el-form-item>
         <el-form-item label="电表本月表底" prop="electricityTotal">
           <el-input v-model="form.electricityTotal" placeholder="请输入电表本月表底" />
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item label="电表用量" prop="electricity">
           <el-input v-model="form.electricity" placeholder="请输入电表用量" />
         </el-form-item>
@@ -485,7 +496,7 @@
 <script>
 import { listRoom, getRoom, delRoom, addRoom, updateRoom , getelec,getcool,gethot,batchUpdateRoom} from "@/api/fee/room";
 import { getToken } from "@/utils/auth";
-import { listConfig, getConfig, delConfig, addConfig, updateConfig } from "@/api/fee/config";
+import { listConfig } from "@/api/fee/config";
 
 export default {
   name: "Room",
@@ -587,11 +598,12 @@ export default {
       },
       selection: [],
       //
-      authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImYwMTk2MWMzNzY3Yjg4MmQ5YzBkMDgyNzM3NmVmN2VjIiwiYWN0aXZpdGkiOmZhbHNlLCJzY29wZSI6WyJPUEVOQVBJIl0sImlkIjo3ODYwOTksImxhbmRsb3JkSWQiOjc4NjA5OSwiZXhwIjoxNzU1Njc2MTM2LCJqdGkiOiIwNTBhNDllMi1kMGVjLTQ3NTAtODdhNy0wM2U2MTM1MmRjZDYiLCJjbGllbnRfaWQiOiJPUEVOQVBJIn0.op3OXSr37fVr2vdxuQBcCWvQfVvIuk5nKiKbHEeLaMo",
+      authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImYwMTk2MWMzNzY3Yjg4MmQ5YzBkMDgyNzM3NmVmN2VjIiwiYWN0aXZpdGkiOmZhbHNlLCJzY29wZSI6WyJPUEVOQVBJIl0sImlkIjo3ODYwOTksImxhbmRsb3JkSWQiOjc4NjA5OSwiZXhwIjoxNzYwMjUxNjA3LCJqdGkiOiJhMDJhOWZhYS1hM2VmLTQ4YjgtYjJmMS1lZTYyOTJjOWVmNjAiLCJjbGllbnRfaWQiOiJPUEVOQVBJIn0.PNu_A-o61YTi3p_3QIReay15Ma0FnJIcqNxEt5vSEHI",
       // 新增用户名和密码
       username: "13515881762",
       password: "yangjing10118",
-      form1:{}
+      form1:{},
+      form2:{}
     };
   },
   created() {
@@ -667,7 +679,8 @@ export default {
           request(options, function (error, response) {
             if (error) return rej(error);
             const body = JSON.parse(response.body);
-            if (body.message === '无效token') {
+            console.log(body)
+            if (body.message === '无效token' || body.message === 'token已过期'|| body.success==false) {
               return that.getZhihuifangdongToken()
                 .then(newAuth => {
                   options.headers.Authorization = newAuth;
@@ -911,6 +924,43 @@ export default {
         enddate: null
       };
     },
+    // 批量计算
+    async handleUpdates2() {
+      this.reset();
+      if (this.ids.length < 2) {
+        this.$modal.msgError("请至少选择两个房间进行批量计算");
+        return;
+      }
+      this.title = "批量计算房间信息";
+      console.log(this.selection)
+      for(const form of this.selection) {
+        if(form.areaNumber == "333"){
+          form.electricity = form.electricityTotal-form.electricityTotalLastmonth
+        }
+        if(form.areaNumber == "1585"){
+          form.electricity = form.electricityTotal-form.electricityTotalLastmonth
+          form.coolwater = form.coolwaterTotal-form.coolwaterTotalLastmonth;
+          form.hotwater = form.hotwaterTotal-form.hotwaterTotalLastmonth;
+        }
+        await listConfig(this.tableData).then(res => {
+          for(let i=0;i<res.total;i++){
+          if(res.rows[i].areaNumber=="333" && res.rows[i].nian==form.nian && res.rows[i].yue==form.yue &&res.rows[i].areaNumber==form.areaNumber ){
+            form.electricityFee = Math.floor((res.rows[i].electricityPrice * form.electricity) * 100) / 100;
+          }
+          if(res.rows[i].areaNumber=="1585" && res.rows[i].nian==form.nian && res.rows[i].yue==form.yue &&res.rows[i].areaNumber==form.areaNumber ){
+            form.electricityFee = Math.floor((res.rows[i].electricityPrice * form.electricity) * 100) / 100;
+            form.hotwaterFee = Math.floor((res.rows[i].hotwaterPrice * form.hotwater) * 100) / 100
+            form.coolwaterFee = Math.floor((res.rows[i].coolwaterPrice * form.coolwater) * 100) / 100
+           }
+          }
+        });
+        this.form2 = form;
+        await updateRoom(this.form2);
+      }
+        this.$modal.msgSuccess("计算成功");
+        this.open = false;
+        this.getList();
+    },
     /** 提交按钮 */
     async submitForm() {
       if (this.title === "批量修改房间信息") {
@@ -939,7 +989,36 @@ export default {
             //   this.getList();
             // });
           } else if(this.form.roomfeeId != null && this.title != "批量修改房间信息") {
+// 0916需求 
+            if(this.form.areaNumber=="1585"||this.form.areaNumber=="333"){
+              if(this.form.areaNumber == "333"){
+                this.form.electricity = this.form.electricityTotal-this.form.electricityTotalLastmonth;
+              }else{
+                this.form.electricity = this.form.electricityTotal-this.form.electricityTotalLastmonth;
+                this.form.coolwater = this.form.coolwaterTotal-this.form.coolwaterTotalLastmonth;
+                this.form.hotwater = this.form.hotwaterTotal-this.form.hotwaterTotalLastmonth;
+              }
+              
+              listConfig(this.tableData).then(res => {
+                for(let i=0;i<res.total;i++){
+                if(res.rows[i].areaNumber=="333" && res.rows[i].nian==this.form.nian && res.rows[i].yue==this.form.yue &&res.rows[i].areaNumber==this.form.areaNumber ){
+                  this.form.electricityFee = Math.floor((res.rows[i].electricityPrice * this.form.electricity) * 100) / 100;
+                }
+                if(res.rows[i].areaNumber=="1585" && res.rows[i].nian==this.form.nian && res.rows[i].yue==this.form.yue &&res.rows[i].areaNumber==this.form.areaNumber ){
+                  this.form.electricityFee = Math.floor((res.rows[i].electricityPrice * this.form.electricity) * 100) / 100;
+                  this.form.hotwaterFee = Math.floor((res.rows[i].hotwaterPrice * this.form.hotwater) * 100) / 100
+                  this.form.coolwaterFee = Math.floor((res.rows[i].coolwaterPrice * this.form.coolwater) * 100) / 100
+                }
 
+                }
+              }); 
+      
+              updateRoom(this.form).then(response => {
+                this.$modal.msgSuccess("修改成功");
+                this.open = false;
+                this.getList();
+              });
+            }else{
             await this.getTableData();
             //计算费用
             // listConfig(this.tableData).then(res => {
@@ -971,6 +1050,7 @@ export default {
               this.open = false;
               this.getList();
             });
+            }
           } else {
             addRoom(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");

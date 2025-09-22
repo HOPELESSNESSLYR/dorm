@@ -1,9 +1,11 @@
 package com.ruoyi.web.controller.dorm;
 
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.feeconfig.domain.FeeConfig;
+import com.ruoyi.feeroom.domain.FeeRoom;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -125,5 +127,10 @@ public class FeePersonController extends BaseController
         String operName = getUsername();
         String message = feePersonService.importFeePerson(feeConfigList, updateSupport, operName);
         return AjaxResult.success(message);
+    }
+
+    @PostMapping("/lockUpdate")
+    public AjaxResult lockUpdate(@RequestBody Long[] feepersonIds) {
+        return toAjax(feePersonService.lockUpdate(feepersonIds));
     }
 }
