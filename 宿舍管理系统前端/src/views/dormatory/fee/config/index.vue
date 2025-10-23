@@ -324,6 +324,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        congifId: null,
         nian: null,
         yue: null,
         areaNumber: null,

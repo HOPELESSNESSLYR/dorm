@@ -19,6 +19,7 @@ public class FeeFloor extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 楼层费用ID */
+    @Excel(name = "楼层费用ID")
     private Long floorfeeId;
 
 

@@ -19,6 +19,7 @@ public class FeeRoom extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 房间费用ID */
+    @Excel(name = "房间费用ID")
     private Long roomfeeId;
 
 

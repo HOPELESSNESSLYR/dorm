@@ -1920,6 +1920,7 @@ export default {
         ruzhuConfirm(data).then(response => {
           if(response.code == "200"){
           // alert(response.msg);
+          // 新增个人费用
           const foundname = this.nameOptions.find(item => item.value === data.name);
           const addPersonfee={
             nian: new Date().getFullYear(),
@@ -1935,6 +1936,23 @@ export default {
           addPerson(addPersonfee).then(response => {
             alert(response.msg);
           });
+          // 0826 退宿入住标识
+          const Person={
+            jobnumber: response.msg
+          }
+          getlistLivepeople(Person).then(res => {
+            alert(res.msg);
+            if(res.data.quitcheck != null){
+              const Person2={
+                jobnumber: response.msg,
+                quitcheck: null
+              }
+              updateLivepeople(Person2).then(res => {
+                console.log(res)
+              })
+            }
+          });
+
           this.isVisible = false;
           this.getList();
           }else{

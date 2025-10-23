@@ -19,6 +19,7 @@ public class FeePerson extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 个人费用 */
+    @Excel(name = "个人费用")
     private Long feepersonId;
 
 
@@ -80,6 +81,7 @@ public class FeePerson extends BaseEntity
     private BigDecimal publicElectricity;
 
     /** 公共热水费 */
+
     @Excel(name = "公共热水费")
     private BigDecimal publicHotwater;
 

@@ -290,6 +290,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
+        floorfeeId: null,
         nian: null,
         yue: null,
         areaNumber: null,

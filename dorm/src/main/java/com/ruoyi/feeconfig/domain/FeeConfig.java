@@ -19,6 +19,7 @@ public class FeeConfig extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 费用配置ID */
+    @Excel(name = "费用配置ID")
     private Long congifId;
 
     /** 年份月份 */
