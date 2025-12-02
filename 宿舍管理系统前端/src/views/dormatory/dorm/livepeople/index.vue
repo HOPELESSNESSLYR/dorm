@@ -9,6 +9,54 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+      <el-form-item label="是否已入住" prop="livecheck">
+        <el-input
+          v-model="queryParams.livecheck"
+          placeholder="请输入是否已入住"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="入住日期" prop="livedate">
+        <el-date-picker clearable
+          v-model="queryParams.livedate"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择入住日期">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="是否已退宿" prop="quitcheck">
+        <el-input
+          v-model="queryParams.quitcheck"
+          placeholder="请输入是否已退宿"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="退宿日期" prop="retreatdate">
+        <el-date-picker clearable
+          v-model="queryParams.retreatdate"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择退宿日期">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="是否调宿" prop="tuneIncheck">
+        <el-input
+          v-model="queryParams.tuneIncheck"
+          placeholder="请输入是否调宿"
+          clearable
+          @keyup.enter.native="handleQuery"
+        />
+      </el-form-item>
+      <el-form-item label="调宿日期" prop="tuneIndate">
+        <el-date-picker clearable
+          v-model="queryParams.tuneIndate"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择调宿日期">
+        </el-date-picker>
+      </el-form-item>
       <!-- <el-form-item label="宿舍楼编号" prop="floorNumber">
         <el-input
           v-model="queryParams.floorNumber"
@@ -190,54 +238,7 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="是否已入住" prop="livecheck">
-        <el-input
-          v-model="queryParams.livecheck"
-          placeholder="请输入是否已入住"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="入住日期" prop="livedate">
-        <el-date-picker clearable
-          v-model="queryParams.livedate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择入住日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="是否已退宿" prop="quitcheck">
-        <el-input
-          v-model="queryParams.quitcheck"
-          placeholder="请输入是否已退宿"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="退宿日期" prop="retreatdate">
-        <el-date-picker clearable
-          v-model="queryParams.retreatdate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择退宿日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="是否调宿" prop="tuneIncheck">
-        <el-input
-          v-model="queryParams.tuneIncheck"
-          placeholder="请输入是否调宿"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="调宿日期" prop="tuneIndate">
-        <el-date-picker clearable
-          v-model="queryParams.tuneIndate"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择调宿日期">
-        </el-date-picker>
-      </el-form-item>
+
       <el-form-item label="是否重复入住" prop="repetitioncheck">
         <el-input
           v-model="queryParams.repetitioncheck"

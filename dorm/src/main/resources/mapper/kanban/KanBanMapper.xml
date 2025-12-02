@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.kanban.mapper.KanBanMapper">
+    
+    <resultMap type="KanBan" id="KanBanResult">
+        <result property="kbid"    column="kbid"    />
+        <result property="checkin"    column="checkin"    />
+        <result property="checkout"    column="checkout"    />
+        <result property="changed"    column="changed"    />
+    </resultMap>
+
+    <sql id="selectKanBanVo">
+        select
+        kbid,
+        checkin,
+        checkout,
+        changed
+        from
+            kanban
+    </sql>
+
+    <select id="selectKanBanList" parameterType="KanBan" resultMap="KanBanResult">
+        <include refid="selectKanBanVo"/>
+        <where>
+            <if test="kbid != null "> and kbid = #{kbid}</if>
+            <if test="checkin != null "> and checkin = #{checkin}</if>
+            <if test="checkout != null "> and checkout = #{checkout}</if>
+            <if test="changed != null "> and changed = #{changed}</if>
+        </where>
+    </select>
+    
+    <select id="selectKanBanByKbid" parameterType="Long" resultMap="KanBanResult">
+        <include refid="selectKanBanVo"/>
+        where kbid = #{kbid}
+    </select>
+        
+    <insert id="insertKanBan" parameterType="KanBan" useGeneratedKeys="true" keyProperty="kbid">
+        insert into kanban
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="checkin != null">checkin,</if>
+            <if test="checkout != null">checkout,</if>
+            <if test="changed != null">changed,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="checkin != null">#{checkin},</if>
+            <if test="checkout != null">#{checkout},</if>
+            <if test="changed != null">#{changed},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKanBan" parameterType="KanBan">
+        update kanban
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="checkin != null">checkin = #{checkin},</if>
+            <if test="checkout != null">checkout = #{checkout},</if>
+            <if test="changed != null">changed = #{changed},</if>
+        </trim>
+        where kbid = #{kbid}
+    </update>
+
+    <delete id="deleteKanBanByKbid" parameterType="Long">
+        delete from kanban where kbid = #{kbid}
+    </delete>
+
+    <delete id="deleteKanBanByKbids" parameterType="String">
+        delete from kanban where kbid in 
+        <foreach item="kbid" collection="array" open="(" separator="," close=")">
+            #{kbid}
+        </foreach>
+    </delete>
+</mapper>
